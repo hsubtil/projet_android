@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pia.tchittchat.SignUpActivity">
+    <ScrollView
+        android:id="@+id/Header"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/sign_up_header_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:text="Sign up"
+                android:textColor="@color/colorAccent"/>
+            <EditText
+                android:id="@+id/sign_up_login"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:hint="Login"
+                android:padding="15dp"/>
+            <EditText
+                android:id="@+id/sign_up_password"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:layout_below="@+id/sign_up_login"
+                android:hint="Password"
+                android:padding="15dp"/>
+            <EditText
+                android:id="@+id/sign_up_password_confirmation"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:layout_below="@+id/sign_up_password"
+                android:hint="Password confirmation"
+                android:padding="15dp"/>
+            <EditText
+                android:id="@+id/sign_up_mail"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:layout_below="@+id/sign_up_password_confirmation"
+                android:hint="Email"
+                android:padding="15dp"/>
+            <EditText
+                android:id="@+id/sign_up_mail_confirmation"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:layout_below="@+id/sign_up_mail"
+                android:hint="Email confirmation"
+                android:padding="15dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Footer"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register !"
+            android:textColor="@color/colorGray"
+            android:background="@color/colorPrimaryDark"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

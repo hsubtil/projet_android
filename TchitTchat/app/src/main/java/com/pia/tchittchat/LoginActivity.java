@@ -1,5 +1,6 @@
 package com.pia.tchittchat;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -89,9 +90,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
         protected void onPostExecute(Boolean success) {
+            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
             if(success)
             {
-                Toast.makeText(LoginActivity.this,"Welcome",Toast.LENGTH_LONG).show();
+
                // Intent intent = new Intent(LoginActivity.this, UserActivity.class);
                 //startActivity(intent);
             }
