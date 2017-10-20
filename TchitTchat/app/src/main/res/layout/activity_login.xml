@@ -33,7 +33,8 @@ android:layout_height="wrap_content">
             android:textSize="15sp"
             android:fontFamily="monospace"
             android:hint="Username"
-            android:padding="15dp"/>
+            android:padding="15dp"
+            />
         <EditText
             android:id="@+id/password"
             android:inputType="textPassword"
@@ -62,13 +63,13 @@ android:layout_height="wrap_content">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Submit"
-        android:layout_toStartOf="@+id/resetBtn"/>
-    <Button android:id="@+id/resetBtn"
+        android:text="Sign In"
+        android:layout_toStartOf="@+id/signUpBtn"/>
+    <Button android:id="@+id/signUpBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Clear" />
+        android:text="Sign Up" />
 </LinearLayout>
 </RelativeLayout>
 

@@ -1,6 +1,5 @@
 package com.pia.tchittchat;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +9,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class LoginActivity extends AppCompatActivity {
     Button submitBtn;
-    Button resetBtn ;
+    Button signUpBtn ;
     EditText username;
     EditText password;
     ProgressBar progressBar;
@@ -20,10 +25,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_login);
         submitBtn = (Button) findViewById(R.id.submitBtn);
-        resetBtn = (Button) findViewById(R.id.resetBtn);
+        signUpBtn = (Button) findViewById(R.id.signUpBtn);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+//        ConnectionManager connect = new ConnectionManager();
+//        InputStream inputStream = connect.getConnection();
+
         super.onCreate(savedInstanceState);
 
         ;
@@ -31,16 +40,14 @@ public class LoginActivity extends AppCompatActivity {
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
-                new  LoginTask().execute();
+                    new  LoginTask().execute();
             }
         });
 
-        resetBtn.setOnClickListener(new View.OnClickListener(){
+        signUpBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
-                username.setText("");
-                password.setText("");
-
+                //TODO : Redirect the page to SignUp page
             }
         });
 
@@ -61,12 +68,22 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            //Do heavy lifting here
-            /*try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
+            HttpURLConnection urlConnection = null;
+
+            try {
+                URL url = new URL("https://training.loicortola.com/chat-rest/1.0");
+                urlConnection = (HttpURLConnection) url.openConnection();
+            }  catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }catch (IOException e2) {
+                e2.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+
+
             return true;
         }
 
@@ -74,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             if(success)
             {
-                Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this,"Welcome",Toast.LENGTH_LONG).show();
                // Intent intent = new Intent(LoginActivity.this, UserActivity.class);
                 //startActivity(intent);
             }
