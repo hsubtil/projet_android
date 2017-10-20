@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import static android.R.id.message;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
