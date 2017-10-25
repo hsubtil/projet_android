@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             if (response.body() != null) {
                                 if (response.body().status == 200) {
                                     Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
+                                    message.setText("");
                                 } else {
                                     Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
                                 }
