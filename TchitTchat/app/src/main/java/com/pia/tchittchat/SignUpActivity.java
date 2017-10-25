@@ -1,12 +1,32 @@
 package com.pia.tchittchat;
 
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.client.Response;
+
+import static android.R.id.message;
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -53,11 +73,15 @@ public class SignUpActivity extends AppCompatActivity {
         return false;
     }
 
+
     private void sendRegisterRequest(){
         String newUserLogin = login.toString();
         String newUserPassword = password.toString();
+        Log.d("test2","testttttttt2222");
         if (checkEmail()){
             if(checkPassword()){
+                new QueryUser().execute("hugo","hugo");
+                //this.openHttpConnection("https://training.loicortola.com/chat-rest/1.0/connect/hugo/hugo");
                 // Send Request
                 // If reply is ok
                 //      Return Home page
@@ -71,5 +95,23 @@ public class SignUpActivity extends AppCompatActivity {
         else{
             Toast.makeText(SignUpActivity.this,R.string.error_mail,Toast.LENGTH_LONG).show();
         }
+    }
+
+    class QueryUser extends AsyncTask<String,String,Result> {
+
+        @Override
+        protected Result doInBackground(String...params) {
+            ConnectionManager connectionService = new RestAdapter.Builder()
+                    .setEndpoint(ConnectionManager.ENDPOINT)
+                    .build()
+                    .create(ConnectionManager.class);
+
+            String user = params[0];
+            String password = params[0];
+            Result repoList = connectionService.getUser(user,password);
+
+            return repoList;
+        }
+
     }
 }
