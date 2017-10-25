@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content">
+<TextView
+    android:id="@+id/Header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorGray"
+    android:textColor="@android:color/white"
+    android:text="CHATS"
+    android:textAlignment="center"
+    android:textSize="25dp"
+    />
+<ScrollView
+    android:id="@+id/Form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/Header"
+    android:layout_above="@+id/Footer">
+    <LinearLayout
+        android:id="@+id/Infos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:fontFamily="monospace"
+            android:padding="15dp"
+            />
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_below="@+id/username"
+            android:fontFamily="monospace"
+            android:padding="15dp"/>
+    </LinearLayout>
+</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/Footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <EditText android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Type your message"
+            android:layout_toStartOf="@+id/sendBtn"/>
+        <Button android:id="@+id/sendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send" />
+    </LinearLayout>
+</RelativeLayout>

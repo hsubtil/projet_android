@@ -50,7 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         signUpBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
-                //TODO : Redirect the page to SignUp page
+                Intent intentSignUp = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intentSignUp);
             }
         });
 
@@ -71,36 +72,16 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            HttpURLConnection urlConnection = null;
-
-            try {
-                URL url = new URL("https://training.loicortola.com/chat-rest/1.0");
-                urlConnection = (HttpURLConnection) url.openConnection();
-            }  catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            }catch (IOException e2) {
-                e2.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-
-
             return true;
         }
 
 
         protected void onPostExecute(Boolean success) {
             Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, message);
-            startActivity(intent);
             if(success)
-            {
-
-               // Intent intent = new Intent(LoginActivity.this, UserActivity.class);
-                //startActivity(intent);
+            {  Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                intentLogged.putExtra("USERNAME", username.getText().toString());
+               startActivity(intentLogged);
             }
             else {
                 Toast.makeText(LoginActivity.this,"Wrong",Toast.LENGTH_LONG).show();
