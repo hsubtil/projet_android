@@ -50,12 +50,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         if(response.body()!=null)
                         {
+                            if(response.body().status == 200){
                             Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
                             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
                             intentLogged.putExtra("USERNAME", username.getText().toString());
                             intentLogged.putExtra("PASSWORD", password.getText().toString());
                                 startActivity(intentLogged);
                             }
+
                         }
                         else {
                             Toast.makeText(LoginActivity.this,"Login or password incorrect",Toast.LENGTH_LONG).show();
