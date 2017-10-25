@@ -42,6 +42,11 @@ android:layout_height="wrap_content">
             android:layout_below="@+id/username"
             android:fontFamily="monospace"
             android:padding="15dp"/>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
     </LinearLayout>
 </ScrollView>
 
@@ -62,5 +67,7 @@ android:layout_height="wrap_content">
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Send" />
+
+
     </LinearLayout>
 </RelativeLayout>
