@@ -2,7 +2,9 @@ package com.pia.tchittchat.rest;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,6 +28,9 @@ public interface ConnectionManager {
     
     @GET("messages/{login}/{password}")
     Call<List<MessageElement>> getMessages(@Path("login") String login, @Path("password") String password);
+
+    @POST("messages/{login}/{password}")
+    Call<ResultSendMessage> sendMessage(@Path("login") String login, @Path("password") String password, @Body MessageElement messageElement);
 
 
 }
