@@ -40,8 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         final ConnectionManager connectionManager = ((MyApplication) getApplication()).getConnectionService();
 
 
-        ;
-
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
@@ -49,15 +47,17 @@ public class LoginActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
-                        if(response.body().status==200)
+                        if(response.body()!=null)
                         {
-                            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
-                            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-                            intentLogged.putExtra("USERNAME", username.getText().toString());
-                            startActivity(intentLogged);
+                            if (response.body().status == 200) {
+                                Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+                                Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                                intentLogged.putExtra("USERNAME", username.getText().toString());
+                                startActivity(intentLogged);
+                            }
                         }
                         else {
-                            Toast.makeText(LoginActivity.this,"Wrong",Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this,"Login or password incorrect",Toast.LENGTH_LONG).show();
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Result> call, Throwable t) {
-
+                        t.printStackTrace();
                     }
                 });
             }

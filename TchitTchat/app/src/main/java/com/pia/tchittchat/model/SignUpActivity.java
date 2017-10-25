@@ -8,8 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
+import com.pia.tchittchat.rest.ConnectionManager;
+import com.pia.tchittchat.rest.Result;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -19,6 +25,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password;
     private EditText password_confirmation;
     private Button submitBtn;
+    private ConnectionManager connectionManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,9 @@ public class SignUpActivity extends AppCompatActivity {
         password_confirmation = (EditText) findViewById(R.id.sign_up_password_confirmation);
         login = (EditText) findViewById(R.id.sign_up_login);
         submitBtn = (Button) findViewById(R.id.submitButton);
+
+        connectionManager = ((MyApplication) getApplication()).getConnectionService();
+
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +73,26 @@ public class SignUpActivity extends AppCompatActivity {
         String newUserPassword = password.toString();
         if (checkEmail()){
             if(checkPassword()){
-                //this.openHttpConnection("https://training.loicortola.com/chat-rest/1.0/connect/hugo/hugo");
-                // Send Request
-                // If reply is ok
-                //      Return Home page
-                // ELSE
-                //      Stay on the page and display error message
+                Call<Result> call = connectionManager.registerUser(login.getText().toString(), password.getText().toString());
+                call.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        if (response.body() != null) {
+                            if (response.body().status == 200) {
+                                Toast.makeText(SignUpActivity.this, "Hello", Toast.LENGTH_LONG).show();
+                                Intent intentLogged = new Intent(SignUpActivity.this, LoginActivity.class);
+                                startActivity(intentLogged);
+                            } else {
+                                Toast.makeText(SignUpActivity.this, "User already exist.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
             }
             else{
                 Toast.makeText(SignUpActivity.this,R.string.error_password_register,Toast.LENGTH_LONG).show();
