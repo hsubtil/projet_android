@@ -1,4 +1,4 @@
-package com.pia.tchittchat;
+package com.pia.tchittchat.rest;
 
 public class Result {
     public int status;

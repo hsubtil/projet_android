@@ -1,4 +1,4 @@
-package com.pia.tchittchat;
+package com.pia.tchittchat.rest;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

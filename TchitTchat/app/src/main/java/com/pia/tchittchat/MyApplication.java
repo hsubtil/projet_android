@@ -2,6 +2,8 @@ package com.pia.tchittchat;
 
 import android.app.Application;
 
+import com.pia.tchittchat.rest.ConnectionManager;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

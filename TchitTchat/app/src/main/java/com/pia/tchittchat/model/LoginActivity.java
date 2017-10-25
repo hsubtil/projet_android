@@ -1,15 +1,18 @@
-package com.pia.tchittchat;
+package com.pia.tchittchat.model;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.pia.tchittchat.MyApplication;
+import com.pia.tchittchat.R;
+import com.pia.tchittchat.rest.ConnectionManager;
+import com.pia.tchittchat.rest.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,9 +49,10 @@ public class LoginActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
-                        Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
                         if(response.body().status==200)
-                        {  Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                        {
+                            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+                            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
                             intentLogged.putExtra("USERNAME", username.getText().toString());
                             startActivity(intentLogged);
                         }
