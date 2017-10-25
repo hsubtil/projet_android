@@ -4,19 +4,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
-import static android.R.id.message;
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     Button submitBtn;
@@ -26,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         submitBtn = (Button) findViewById(R.id.submitBtn);
         signUpBtn = (Button) findViewById(R.id.signUpBtn);
@@ -36,14 +34,36 @@ public class LoginActivity extends AppCompatActivity {
 //        ConnectionManager connect = new ConnectionManager();
 //        InputStream inputStream = connect.getConnection();
 
-        super.onCreate(savedInstanceState);
+        final ConnectionManager connectionManager = ((MyApplication) getApplication()).getConnectionService();
+
 
         ;
 
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
-                    new  LoginTask().execute();
+                Call<Result> call = connectionManager.getUser(username.getText().toString(), password.getText().toString());
+                call.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+                        if(response.body().status==200)
+                        {  Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                            intentLogged.putExtra("USERNAME", username.getText().toString());
+                            startActivity(intentLogged);
+                        }
+                        else {
+                            Toast.makeText(LoginActivity.this,"Wrong",Toast.LENGTH_LONG).show();
+                        }
+
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+
+                    }
+                });
             }
         });
 
@@ -56,40 +76,27 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
     }
 
-    private class LoginTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            //Show progress bar
-            progressBar.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return true;
-        }
-
-
-        protected void onPostExecute(Boolean success) {
-            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
-            if(success)
-            {  Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-                intentLogged.putExtra("USERNAME", username.getText().toString());
-               startActivity(intentLogged);
-            }
-            else {
-                Toast.makeText(LoginActivity.this,"Wrong",Toast.LENGTH_LONG).show();
-            }
-
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
+//    private class LoginTask extends AsyncTask<Void, Void, Boolean> {
+//        @Override
+//        protected void onPreExecute() {
+//            //Show progress bar
+//            progressBar.setVisibility(View.VISIBLE);
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            new QueryUser().execute("hugo","hugo");
+//            return true;
+//        }
+//
+//
+//        protected void onPostExecute(Boolean success) {
+//
+//        }
+//    }
 
 }
 
