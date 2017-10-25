@@ -43,16 +43,17 @@ public class LoginActivity extends AppCompatActivity {
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
+                progressBar.setVisibility(View.VISIBLE);
                 Call<Result> call = connectionManager.getUser(username.getText().toString(), password.getText().toString());
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         if(response.body()!=null)
                         {
-                            if (response.body().status == 200) {
-                                Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
-                                Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-                                intentLogged.putExtra("USERNAME", username.getText().toString());
+                            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
+                            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                            intentLogged.putExtra("USERNAME", username.getText().toString());
+                            intentLogged.putExtra("PASSWORD", password.getText().toString());
                                 startActivity(intentLogged);
                             }
                         }
