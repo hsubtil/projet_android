@@ -1,4 +1,4 @@
-package com.pia.tchittchat.model;
+package com.pia.tchittchat.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,8 @@ import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.rest.Auth;
-import com.pia.tchittchat.rest.Result;
-import com.pia.tchittchat.view.Helper;
+import com.pia.tchittchat.model.Auth;
+import com.pia.tchittchat.model.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;

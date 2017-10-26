@@ -1,4 +1,4 @@
-package com.pia.tchittchat.rest;
+package com.pia.tchittchat.model;
 
 /**
  * Created by pia92 on 26/10/2017.

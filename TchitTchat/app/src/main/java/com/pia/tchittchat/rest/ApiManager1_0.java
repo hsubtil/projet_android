@@ -1,5 +1,9 @@
 package com.pia.tchittchat.rest;
 
+import com.pia.tchittchat.model.Messages;
+import com.pia.tchittchat.model.Result;
+import com.pia.tchittchat.model.ResultMessages;
+
 import java.util.List;
 
 import retrofit2.Call;

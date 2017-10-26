@@ -1,9 +1,8 @@
-package com.pia.tchittchat.model;
+package com.pia.tchittchat.view;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +13,7 @@ import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.rest.Result;
-import com.pia.tchittchat.view.Helper;
-
-import java.io.UnsupportedEncodingException;
+import com.pia.tchittchat.model.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;

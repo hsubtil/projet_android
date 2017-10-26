@@ -1,4 +1,4 @@
-package com.pia.tchittchat.model;
+package com.pia.tchittchat.view;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,17 +12,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pia.tchittchat.MyAdapter;
+import com.pia.tchittchat.rest.MyAdapter;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.rest.Image;
-import com.pia.tchittchat.rest.Messages;
-import com.pia.tchittchat.rest.ResultMessages;
-import com.pia.tchittchat.view.Helper;
+import com.pia.tchittchat.model.Image;
+import com.pia.tchittchat.model.Messages;
+import com.pia.tchittchat.model.ResultMessages;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

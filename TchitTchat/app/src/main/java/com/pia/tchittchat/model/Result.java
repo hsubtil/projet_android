@@ -1,15 +1,11 @@
-package com.pia.tchittchat.rest;
+package com.pia.tchittchat.model;
 
-/**
- * Created by pia92 on 25/10/2017.
- */
-
-public class ResultMessages {
-
+public class Result {
     public int status;
     public String message;
+    public String[] element;
 
-    public ResultMessages() {
+    public Result() {
     }
 
     public int getStatus() {
@@ -28,4 +24,11 @@ public class ResultMessages {
         this.message = message;
     }
 
+    public String[] getElement() {
+        return element;
+    }
+
+    public void setElement(String[] element) {
+        this.element = element;
+    }
 }

@@ -1,7 +1,6 @@
-package com.pia.tchittchat.rest;
+package com.pia.tchittchat.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by pia92 on 25/10/2017.

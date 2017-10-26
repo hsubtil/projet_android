@@ -1,4 +1,4 @@
-package com.pia.tchittchat;
+package com.pia.tchittchat.rest;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,7 +7,8 @@ import android.view.View;
         import android.view.ViewGroup;
         import android.widget.TextView;
 
-import com.pia.tchittchat.rest.Messages;
+import com.pia.tchittchat.R;
+import com.pia.tchittchat.model.Messages;
 
 import java.util.List;
 
