@@ -11,7 +11,8 @@ import android.widget.Toast;
 
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
-import com.pia.tchittchat.rest.ConnectionManager;
+import com.pia.tchittchat.rest.ApiManager1_0;
+import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.rest.Result;
 
 import retrofit2.Call;
@@ -37,14 +38,16 @@ public class LoginActivity extends AppCompatActivity {
 //        ConnectionManager connect = new ConnectionManager();
 //        InputStream inputStream = connect.getConnection();
 
-        final ConnectionManager connectionManager = ((MyApplication) getApplication()).getConnectionService();
+        final ApiManager1_0 apiManager = ((MyApplication) getApplication()).getApiManager1_0();
+        final ApiManager2_0 apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
 
 
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
                 progressBar.setVisibility(View.VISIBLE);
-                Call<Result> call = connectionManager.getUser(username.getText().toString(), password.getText().toString());
+               // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
+                Call<Result> call = apiManager2_0.connect("");
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -84,26 +87,5 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
-
-//    private class LoginTask extends AsyncTask<Void, Void, Boolean> {
-//        @Override
-//        protected void onPreExecute() {
-//            //Show progress bar
-//            progressBar.setVisibility(View.VISIBLE);
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            new QueryUser().execute("hugo","hugo");
-//            return true;
-//        }
-//
-//
-//        protected void onPostExecute(Boolean success) {
-//
-//        }
-//    }
-
 }
 

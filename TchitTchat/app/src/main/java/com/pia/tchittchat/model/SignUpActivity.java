@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
-import com.pia.tchittchat.rest.ConnectionManager;
+import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.Result;
 
 import retrofit2.Call;
@@ -25,7 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password;
     private EditText password_confirmation;
     private Button submitBtn;
-    private ConnectionManager connectionManager;
+    private ApiManager1_0 apiManager;
 
 
     @Override
@@ -33,7 +33,6 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        Intent intent = getIntent();
 
         mail = (EditText) findViewById(R.id.sign_up_mail);
         mail_confirmation = (EditText) findViewById(R.id.sign_up_mail_confirmation);
@@ -42,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
         login = (EditText) findViewById(R.id.sign_up_login);
         submitBtn = (Button) findViewById(R.id.submitButton);
 
-        connectionManager = ((MyApplication) getApplication()).getConnectionService();
+        apiManager = ((MyApplication) getApplication()).getApiManager1_0();
 
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,25 +54,21 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private boolean checkEmail(){
-        if(mail.getText().toString().equals(mail_confirmation.getText().toString()))
-            return true;
-        return false;
+        return mail.getText().toString().equals(mail_confirmation.getText().toString());
     }
 
     private boolean checkPassword(){
         // Check password length + carac ???
-        if(password.getText().toString().equals(password_confirmation.getText().toString()))
-            return true;
-        return false;
+        return password.getText().toString().equals(password_confirmation.getText().toString());
     }
 
 
     private void sendRegisterRequest(){
-        String newUserLogin = login.toString();
-        String newUserPassword = password.toString();
+        String newUserLogin = login.getText().toString();
+        String newUserPassword = password.getText().toString();
         if (checkEmail()){
             if(checkPassword()){
-                Call<Result> call = connectionManager.registerUser(login.getText().toString(), password.getText().toString());
+                Call<Result> call = apiManager.registerUser(newUserLogin, newUserPassword);
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {

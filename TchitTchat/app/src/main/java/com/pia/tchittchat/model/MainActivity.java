@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.pia.tchittchat.MyAdapter;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
-import com.pia.tchittchat.rest.ConnectionManager;
+import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.MessageElement;
 import com.pia.tchittchat.rest.Result;
 import com.pia.tchittchat.rest.ResultSendMessage;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     EditText message;
     String password;
     RecyclerView recyclerViewMessages;
-    ConnectionManager connectionManager;
+    ApiManager1_0 apiManager;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         password = getIntent().getStringExtra("PASSWORD");
         username.setText(getIntent().getStringExtra("USERNAME"));
 
-        connectionManager = ((MyApplication) getApplication()).getConnectionService();
+        apiManager = ((MyApplication) getApplication()).getApiManager1_0();
 
         recyclerViewMessages = (RecyclerView) findViewById(R.id.recyclerViewMessages);
         recyclerViewMessages.setHasFixedSize(true);
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayMessage() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<List<MessageElement>> call = connectionManager.getMessages(username.getText().toString(), password.toString());
+        Call<List<MessageElement>> call = apiManager.getMessages(username.getText().toString(), password.toString());
         call.enqueue(new Callback<List<MessageElement>>() {
             @Override
             public void onResponse(Call<List<MessageElement>> call, Response<List<MessageElement>> response) {
@@ -133,19 +133,19 @@ public class MainActivity extends AppCompatActivity {
             jsonObject.accumulate("login", messageElement.getLogin());
             jsonObject.accumulate("message", messageElement.getMessage());*/
 
-            Call<ResultSendMessage> call = connectionManager.sendMessage(username.getText().toString(), password.toString(), messageElement);
-            call.enqueue(new Callback<ResultSendMessage>() {
-                @Override
-                public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {
-                    if (response.body() != null) {
-                        if (response.body().status == 200) {
-                            Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
-                            message.setText("");
-                        } else {
-                            Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
+                    Call<ResultSendMessage> call = apiManager.sendMessage(username.getText().toString(), password.toString(),messageElement);
+                    call.enqueue(new Callback<ResultSendMessage>() {
+                        @Override
+                        public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {
+                            if (response.body() != null) {
+                                if (response.body().status == 200) {
+                                    Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
+                                    message.setText("");
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
+                                }
+                            }
                         }
-                    }
-                }
 
                 @Override
                 public void onFailure(Call<ResultSendMessage> call, Throwable t) {
