@@ -15,6 +15,7 @@ import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.rest.Result;
+import com.pia.tchittchat.view.Helper;
 
 import java.io.UnsupportedEncodingException;
 
@@ -51,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick (View v){
                 progressBar.setVisibility(View.VISIBLE);
                // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
-                Call<Result> call = apiManager2_0.connect(getAuthToken());
+                Call<Result> call = apiManager2_0.connect(Helper.createAuthToken(username.getText().toString(), password.getText().toString()));
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -91,16 +92,5 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
-    public String getAuthToken(){
-        byte[] data = new byte[0];
-        try {
-            data = (username.getText().toString() + ":" + password.getText().toString()).getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String output = "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
-        return output;
-    }
-
 }
 
