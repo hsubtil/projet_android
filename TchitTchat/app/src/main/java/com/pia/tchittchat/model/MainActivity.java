@@ -17,10 +17,13 @@ import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.rest.ResultGetMessage;
-import com.pia.tchittchat.rest.ResultSendMessage;
+import com.pia.tchittchat.rest.Image;
+import com.pia.tchittchat.rest.Messages;
+import com.pia.tchittchat.rest.ResultMessages;
 import com.pia.tchittchat.view.Helper;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayMessage() {
         progressBar.setVisibility(View.VISIBLE);
-       // Call<List<ResultGetMessage>> call = apiManager.getMessages(username.getText().toString(), password.toString());
-        Call<List<ResultGetMessage>> call = apiManager2_0.messages(Helper.createAuthToken(username.getText().toString(), password.toString()),20,0);
+        // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
+        Call<List<Messages>> call = apiManager2_0.getMessages(Helper.createAuthToken(username.getText().toString(), password.toString()), 20, 0);
 
-        call.enqueue(new Callback<List<ResultGetMessage>>() {
+        call.enqueue(new Callback<List<Messages>>() {
             @Override
-            public void onResponse(Call<List<ResultGetMessage>> call, Response<List<ResultGetMessage>> response) {
+            public void onResponse(Call<List<Messages>> call, Response<List<Messages>> response) {
                 RecyclerView.Adapter myAdapter = new MyAdapter(response.body());
                 recyclerViewMessages.setAdapter(myAdapter);
 
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ResultGetMessage>> call, Throwable t) {
+            public void onFailure(Call<List<Messages>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -122,32 +125,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendMessage() {
         {
-            ResultGetMessage resultGetMessage = new ResultGetMessage();
-            resultGetMessage.setLogin(username.getText().toString());
-            resultGetMessage.setMessage(message.getText().toString());
-            resultGetMessage.setUuid(UUID.randomUUID().toString());
+            Messages messages = new Messages();
+            messages.setLogin(username.getText().toString());
+            messages.setMessage(message.getText().toString());
+            messages.setUuid(UUID.randomUUID().toString());
+            ArrayList<Image> attachments = new ArrayList<Image>();
+            messages.setAttachments(attachments);
 
-            /*JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("uuid", resultGetMessage.getUuid());
-            jsonObject.accumulate("login", resultGetMessage.getLogin());
-            jsonObject.accumulate("message", resultGetMessage.getMessage());*/
 
-                    Call<ResultSendMessage> call = apiManager.sendMessage(username.getText().toString(), password.toString(), resultGetMessage);
-                    call.enqueue(new Callback<ResultSendMessage>() {
-                        @Override
-                        public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {
-                            if (response.body() != null) {
-                                if (response.body().status == 200) {
-                                    Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
-                                    message.setText("");
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
-                                }
-                            }
+            Call<ResultMessages> call = apiManager2_0.sendMessages(Helper.createAuthToken(username.getText().toString(), password.toString()), messages);
+
+            call.enqueue(new Callback<ResultMessages>() {
+                @Override
+                public void onResponse(Call<ResultMessages> call, Response<ResultMessages> response) {
+                    if (response.body() != null) {
+                        if (response.body().status == 200) {
+                            Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
+                            message.setText("");
+                        } else {
+                            Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
                         }
+                    }
+                }
 
                 @Override
-                public void onFailure(Call<ResultSendMessage> call, Throwable t) {
+                public void onFailure(Call<ResultMessages> call, Throwable t) {
                     t.printStackTrace();
                 }
             });

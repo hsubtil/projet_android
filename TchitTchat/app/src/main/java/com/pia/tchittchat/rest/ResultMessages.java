@@ -4,12 +4,12 @@ package com.pia.tchittchat.rest;
  * Created by pia92 on 25/10/2017.
  */
 
-public class ResultSendMessage {
+public class ResultMessages {
 
     public int status;
     public String message;
 
-    public ResultSendMessage() {
+    public ResultMessages() {
     }
 
     public int getStatus() {

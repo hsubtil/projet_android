@@ -1,21 +1,24 @@
 package com.pia.tchittchat.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by pia92 on 25/10/2017.
  */
 
-public class ResultGetMessage {
+public class Messages {
     String uuid;
     String login;
     String message;
-    String [] images;
+    ArrayList<Image> attachments;
 
-    public String[] getImages() {
-        return images;
+    public ArrayList<Image> getAttachments() {
+        return attachments;
     }
 
-    public void setImages(String[] images) {
-        this.images = images;
+    public void setAttachments(ArrayList<Image> attachments) {
+        this.attachments = attachments;
     }
 
     public String getUuid() {
