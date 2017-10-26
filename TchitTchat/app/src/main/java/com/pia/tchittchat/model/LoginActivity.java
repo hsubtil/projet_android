@@ -3,6 +3,7 @@ package com.pia.tchittchat.model;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,16 +16,19 @@ import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.rest.Result;
 
+import java.io.UnsupportedEncodingException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    Button submitBtn;
-    Button signUpBtn ;
-    EditText username;
-    EditText password;
-    ProgressBar progressBar;
+    private Button submitBtn;
+    private Button signUpBtn ;
+    private EditText username;
+    private EditText password;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick (View v){
                 progressBar.setVisibility(View.VISIBLE);
                // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
-                Call<Result> call = apiManager2_0.connect("");
+                Call<Result> call = apiManager2_0.connect(getAuthToken());
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -87,5 +91,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+    public String getAuthToken(){
+        byte[] data = new byte[0];
+        try {
+            data = (username.getText().toString() + ":" + password.getText().toString()).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String output = "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
+        return output;
+    }
+
 }
 
