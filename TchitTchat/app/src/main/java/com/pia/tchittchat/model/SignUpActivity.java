@@ -11,7 +11,10 @@ import android.widget.Toast;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
+import com.pia.tchittchat.rest.ApiManager2_0;
+import com.pia.tchittchat.rest.Auth;
 import com.pia.tchittchat.rest.Result;
+import com.pia.tchittchat.view.Helper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password_confirmation;
     private Button submitBtn;
     private ApiManager1_0 apiManager;
+    private ApiManager2_0 apiManager2_0;
 
 
     @Override
@@ -42,7 +46,7 @@ public class SignUpActivity extends AppCompatActivity {
         submitBtn = (Button) findViewById(R.id.submitButton);
 
         apiManager = ((MyApplication) getApplication()).getApiManager1_0();
-
+        apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +68,13 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void sendRegisterRequest(){
-        String newUserLogin = login.getText().toString();
-        String newUserPassword = password.getText().toString();
+        Auth authRequest = new Auth();
+        authRequest.setLogin(login.getText().toString());
+        authRequest.setPassword(password.getText().toString());
         if (checkEmail()){
             if(checkPassword()){
-                Call<Result> call = apiManager.registerUser(newUserLogin, newUserPassword);
+               // Call<Result> call = apiManager.registerUser(newUserLogin, newUserPassword);
+                Call<Result> call = apiManager2_0.registerUser(authRequest);
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -80,6 +86,10 @@ public class SignUpActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(SignUpActivity.this, "User already exist.", Toast.LENGTH_LONG).show();
                             }
+                        }
+                        else {
+                            // If error.body
+                            Toast.makeText(SignUpActivity.this, "User already exist.", Toast.LENGTH_LONG).show();
                         }
                     }
 

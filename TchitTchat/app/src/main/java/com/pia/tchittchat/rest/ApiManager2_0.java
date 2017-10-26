@@ -7,6 +7,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -19,11 +20,15 @@ public interface ApiManager2_0 {
 
     @GET("connect")
     Call<Result> connect(@Header("Authorization") String authorization);
+
     @GET("messages")
     Call<List<Messages>> getMessages(@Header("Authorization") String authorization, @Query("limit") Integer limit, @Query("offset") Integer offeset);
 
     @POST("messages")
     Call<ResultMessages> sendMessages(@Header("Authorization") String authorization,@Body Messages messageElement);
+    
+    @POST("register")
+    Call<Result> registerUser(  @Body Auth resultAuth );
 
 
 
