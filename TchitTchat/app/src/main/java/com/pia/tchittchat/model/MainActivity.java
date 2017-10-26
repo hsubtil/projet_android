@@ -1,6 +1,7 @@
 package com.pia.tchittchat.model;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     EditText message;
     String password;
-    RecyclerView recyclerViewMessages ;
+    RecyclerView recyclerViewMessages;
     ConnectionManager connectionManager;
-
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         sendBtn = (Button) findViewById(R.id.sendBtn);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         message = (EditText) findViewById(R.id.message);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         password = getIntent().getStringExtra("PASSWORD");
         username.setText(getIntent().getStringExtra("USERNAME"));
@@ -73,12 +75,20 @@ public class MainActivity extends AppCompatActivity {
         String currentDate = df.format(Calendar.getInstance().getTime());
 
         date.setText(currentDate);*/
-
         displayMessage();
 
-        sendBtn.setOnClickListener ( new View.OnClickListener (){
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick (View v){
+            public void onRefresh() {
+                // Refresh items
+                displayMessage();
+            }
+        });
+
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 {
                     sendMessage();
                 }
@@ -86,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void displayMessage (){
+
+    private void displayMessage() {
         progressBar.setVisibility(View.VISIBLE);
         Call<List<MessageElement>> call = connectionManager.getMessages(username.getText().toString(), password.toString());
         call.enqueue(new Callback<List<MessageElement>>() {
@@ -95,9 +106,12 @@ public class MainActivity extends AppCompatActivity {
                 RecyclerView.Adapter myAdapter = new MyAdapter(response.body());
                 recyclerViewMessages.setAdapter(myAdapter);
 
-                Toast.makeText(MainActivity.this,"Messages retrieved",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Messages retrieved", Toast.LENGTH_LONG).show();
 
                 progressBar.setVisibility(View.INVISIBLE);
+
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
 
             @Override
@@ -107,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage () {
+    private void sendMessage() {
         {
             MessageElement messageElement = new MessageElement();
             messageElement.setLogin(username.getText().toString());
@@ -119,25 +133,25 @@ public class MainActivity extends AppCompatActivity {
             jsonObject.accumulate("login", messageElement.getLogin());
             jsonObject.accumulate("message", messageElement.getMessage());*/
 
-                    Call<ResultSendMessage> call = connectionManager.sendMessage(username.getText().toString(), password.toString(),messageElement);
-                    call.enqueue(new Callback<ResultSendMessage>() {
-                        @Override
-                        public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {
-                            if (response.body() != null) {
-                                if (response.body().status == 200) {
-                                    Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
-                                    message.setText("");
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
-                                }
-                            }
+            Call<ResultSendMessage> call = connectionManager.sendMessage(username.getText().toString(), password.toString(), messageElement);
+            call.enqueue(new Callback<ResultSendMessage>() {
+                @Override
+                public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {
+                    if (response.body() != null) {
+                        if (response.body().status == 200) {
+                            Toast.makeText(MainActivity.this, "Message Sent", Toast.LENGTH_LONG).show();
+                            message.setText("");
+                        } else {
+                            Toast.makeText(MainActivity.this, "Something went wrong try again", Toast.LENGTH_LONG).show();
                         }
+                    }
+                }
 
-                        @Override
-                        public void onFailure(Call<ResultSendMessage> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
+                @Override
+                public void onFailure(Call<ResultSendMessage> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
 
         }
     }
