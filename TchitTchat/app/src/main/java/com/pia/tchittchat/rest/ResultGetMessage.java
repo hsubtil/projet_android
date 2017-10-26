@@ -4,10 +4,19 @@ package com.pia.tchittchat.rest;
  * Created by pia92 on 25/10/2017.
  */
 
-public class MessageElement {
+public class ResultGetMessage {
     String uuid;
     String login;
     String message;
+    String [] images;
+
+    public String[] getImages() {
+        return images;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
+    }
 
     public String getUuid() {
         return uuid;

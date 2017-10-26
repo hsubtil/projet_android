@@ -23,10 +23,10 @@ public interface ApiManager1_0 {
     Call<Result> registerUser(@Path("login") String login, @Path("password") String password);
 
     @GET("messages/{login}/{password}")
-    Call<List<MessageElement>> getMessages(@Path("login") String login, @Path("password") String password);
+    Call<List<ResultGetMessage>> getMessages(@Path("login") String login, @Path("password") String password);
 
     @POST("messages/{login}/{password}")
-    Call<ResultSendMessage> sendMessage(@Path("login") String login, @Path("password") String password, @Body MessageElement messageElement);
+    Call<ResultSendMessage> sendMessage(@Path("login") String login, @Path("password") String password, @Body ResultGetMessage resultGetMessage);
 
 
 }

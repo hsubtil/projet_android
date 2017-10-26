@@ -1,6 +1,5 @@
 package com.pia.tchittchat.model;
 
-import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,17 +16,11 @@ import com.pia.tchittchat.MyAdapter;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
-import com.pia.tchittchat.rest.MessageElement;
-import com.pia.tchittchat.rest.Result;
+import com.pia.tchittchat.rest.ApiManager2_0;
+import com.pia.tchittchat.rest.ResultGetMessage;
 import com.pia.tchittchat.rest.ResultSendMessage;
+import com.pia.tchittchat.view.Helper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     String password;
     RecyclerView recyclerViewMessages;
     ApiManager1_0 apiManager;
+    ApiManager2_0 apiManager2_0;
+
     SwipeRefreshLayout mSwipeRefreshLayout;
 
 
@@ -63,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         username.setText(getIntent().getStringExtra("USERNAME"));
 
         apiManager = ((MyApplication) getApplication()).getApiManager1_0();
+        apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
+
 
         recyclerViewMessages = (RecyclerView) findViewById(R.id.recyclerViewMessages);
         recyclerViewMessages.setHasFixedSize(true);
@@ -99,10 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayMessage() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<List<MessageElement>> call = apiManager.getMessages(username.getText().toString(), password.toString());
-        call.enqueue(new Callback<List<MessageElement>>() {
+       // Call<List<ResultGetMessage>> call = apiManager.getMessages(username.getText().toString(), password.toString());
+        Call<List<ResultGetMessage>> call = apiManager2_0.messages(Helper.createAuthToken(username.getText().toString(), password.toString()),20,0);
+
+        call.enqueue(new Callback<List<ResultGetMessage>>() {
             @Override
-            public void onResponse(Call<List<MessageElement>> call, Response<List<MessageElement>> response) {
+            public void onResponse(Call<List<ResultGetMessage>> call, Response<List<ResultGetMessage>> response) {
                 RecyclerView.Adapter myAdapter = new MyAdapter(response.body());
                 recyclerViewMessages.setAdapter(myAdapter);
 
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<MessageElement>> call, Throwable t) {
+            public void onFailure(Call<List<ResultGetMessage>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -123,17 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendMessage() {
         {
-            MessageElement messageElement = new MessageElement();
-            messageElement.setLogin(username.getText().toString());
-            messageElement.setMessage(message.getText().toString());
-            messageElement.setUuid(UUID.randomUUID().toString());
+            ResultGetMessage resultGetMessage = new ResultGetMessage();
+            resultGetMessage.setLogin(username.getText().toString());
+            resultGetMessage.setMessage(message.getText().toString());
+            resultGetMessage.setUuid(UUID.randomUUID().toString());
 
             /*JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("uuid", messageElement.getUuid());
-            jsonObject.accumulate("login", messageElement.getLogin());
-            jsonObject.accumulate("message", messageElement.getMessage());*/
+            jsonObject.accumulate("uuid", resultGetMessage.getUuid());
+            jsonObject.accumulate("login", resultGetMessage.getLogin());
+            jsonObject.accumulate("message", resultGetMessage.getMessage());*/
 
-                    Call<ResultSendMessage> call = apiManager.sendMessage(username.getText().toString(), password.toString(),messageElement);
+                    Call<ResultSendMessage> call = apiManager.sendMessage(username.getText().toString(), password.toString(), resultGetMessage);
                     call.enqueue(new Callback<ResultSendMessage>() {
                         @Override
                         public void onResponse(Call<ResultSendMessage> call, Response<ResultSendMessage> response) {

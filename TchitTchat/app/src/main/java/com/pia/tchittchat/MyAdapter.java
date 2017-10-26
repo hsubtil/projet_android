@@ -7,7 +7,7 @@ import android.view.View;
         import android.view.ViewGroup;
         import android.widget.TextView;
 
-import com.pia.tchittchat.rest.MessageElement;
+import com.pia.tchittchat.rest.ResultGetMessage;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private List<MessageElement> dataset;
+    private List<ResultGetMessage> dataset;
 
     // Provide a reference to the views for each data item
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<MessageElement> dataset) {
+    public MyAdapter(List<ResultGetMessage> dataset) {
         this.dataset = dataset;
     }
 
