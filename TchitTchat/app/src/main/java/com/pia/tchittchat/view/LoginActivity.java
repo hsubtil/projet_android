@@ -1,6 +1,7 @@
 package com.pia.tchittchat.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
     private ProgressBar progressBar;
+    private SharedPreferences mPrefs;
+    private ApiManager2_0 apiManager2_0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +38,27 @@ public class LoginActivity extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mPrefs = getSharedPreferences("authToken", 0);
 
 //        ConnectionManager connect = new ConnectionManager();
 //        InputStream inputStream = connect.getConnection();
 
-        final ApiManager1_0 apiManager = ((MyApplication) getApplication()).getApiManager1_0();
-        final ApiManager2_0 apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
-
+        // Api for get/post requests
+        //apiManager = ((MyApplication) getApplication()).getApiManager1_0();
+        apiManager2_0 =  ((MyApplication) getApplication()).getApiManager2_0();
+        checkConnectionToken();
 
         submitBtn.setOnClickListener ( new View.OnClickListener (){
             @Override
             public void onClick (View v){
                 progressBar.setVisibility(View.VISIBLE);
                // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
-                Call<Result> call = apiManager2_0.connect(Helper.createAuthToken(username.getText().toString(), password.getText().toString()));
+
+               // String mString = mPrefs.getString("tag", "default_value_if_variable_not_found");
+                SharedPreferences.Editor mEditor = mPrefs.edit();
+                String authToken = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
+                mEditor.putString("authToken", authToken).apply();
+                Call<Result> call = apiManager2_0.connectWithAuth(authToken);
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
@@ -87,6 +97,35 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+
+
+    }
+
+    private void checkConnectionToken(){
+        String authToken = mPrefs.getString("authToken", "null");
+        Call<Result> call = apiManager2_0.connectWithAuth(authToken);
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                if (response.body() != null) {
+                    if (response.body().status == 200) {
+                        Toast.makeText(LoginActivity.this, "Hello again", Toast.LENGTH_LONG).show();
+                        Intent intentalredyLogged = new Intent(LoginActivity.this, MainActivity.class);
+                        intentalredyLogged.putExtra("USERNAME", "hugo");
+                        intentalredyLogged.putExtra("PASSWORD", "hugo");
+                        startActivity(intentalredyLogged);
+                    }
+
+                } else {
+                    Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }
 

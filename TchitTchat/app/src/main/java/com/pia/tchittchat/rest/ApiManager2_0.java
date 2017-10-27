@@ -23,7 +23,10 @@ public interface ApiManager2_0 {
     String ENDPOINT = "https://training.loicortola.com/chat-rest/2.0/";
 
     @GET("connect")
-    Call<Result> connect(@Header("Authorization") String authorization);
+    Call<Result> connectWithAuth(@Header("Authorization") String authorization);
+
+    @GET("connect")
+    Call<Result> connect();
 
     @GET("messages")
     Call<List<Messages>> getMessages(@Header("Authorization") String authorization, @Query("limit") Integer limit, @Query("offset") Integer offeset);
