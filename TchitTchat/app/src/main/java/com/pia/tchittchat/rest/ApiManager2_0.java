@@ -1,5 +1,7 @@
 package com.pia.tchittchat.rest;
 
+import android.widget.ImageView;
+
 import com.pia.tchittchat.model.Auth;
 import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.Result;
@@ -32,19 +34,9 @@ public interface ApiManager2_0 {
     Call<ResultMessages> sendMessages(@Header("Authorization") String authorization, @Body Messages messageElement);
     
     @POST("register")
-    Call<Result> registerUser(  @Body Auth resultAuth );
+    Call<Result> registerUser( @Body Auth resultAuth );
 
-
-
-    /*
-    @POST("register/{login}/{password}")
-    Call<Result> registerUser(@Path("login") String login, @Path("password") String password);
-
-    @GET("messages/{login}/{password}")
-    Call<List<Messages>> getMessages(@Path("login") String login, @Path("password") String password);
-
-    @POST("messages/{login}/{password}")
-    Call<ResultMessages> sendMessage(@Path("login") String login, @Path("password") String password, @Body Messages messageElement);
-*/
+    @GET("files")
+    Call <ImageView> getAttachements (@Header("Authorization") String authorization, @Query( "uuid") String uuid, @Query("filename") String filename);
 
 }

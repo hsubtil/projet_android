@@ -1,15 +1,21 @@
 package com.pia.tchittchat.rest;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
         import android.view.LayoutInflater;
         import android.view.ViewGroup;
-        import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pia.tchittchat.R;
+import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.model.Messages;
 
+import java.lang.reflect.Array;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,12 +29,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView sender;
         public TextView message;
+        public ImageView image;
 
 
         public ViewHolder(View v) {
             super(v);
             sender = v.findViewById(R.id.sender);
             message = v.findViewById(R.id.message);
+            image = v.findViewById(R.id.image);
         }
     }
 
