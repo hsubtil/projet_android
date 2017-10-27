@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.rest.MyAdapter;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             messages.setLogin(username.getText().toString());
             messages.setMessage(message.getText().toString());
             messages.setUuid(UUID.randomUUID().toString());
-            ArrayList<Image> attachments = new ArrayList<Image>();
+            Attachment attachments = new Attachment();
             messages.setAttachments(attachments);
 
 
@@ -174,6 +176,28 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
+    }
+
+    private void getMessageAttachments(Messages message) {
+
+        progressBar.setVisibility(View.VISIBLE);
+        // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
+        Call<ImageView> call = apiManager2_0.getAttachements(Helper.createAuthToken(username.getText().toString(), password.toString()),message.getAttachments().getUuid(), message.getAttachments().getFilename());
+
+        call.enqueue(new Callback<ImageView>() {
+            @Override
+            public void onResponse(Call<ImageView> call, Response<ImageView> response) {
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ImageView> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
     }
 
 }

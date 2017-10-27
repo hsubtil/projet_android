@@ -10,13 +10,13 @@ public class Messages {
     String uuid;
     String login;
     String message;
-    ArrayList<Image> attachments;
+    Attachment attachments;
 
-    public ArrayList<Image> getAttachments() {
+    public Attachment getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(ArrayList<Image> attachments) {
+    public void setAttachments(Attachment attachments) {
         this.attachments = attachments;
     }
 
