@@ -1,5 +1,7 @@
 package com.pia.tchittchat.view;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,12 +33,14 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SharedPreferences mPrefs;
     TextView date;
     TextView username;
     Button sendBtn;
     ProgressBar progressBar;
     EditText message;
-    String password;
+    String login;
+    String authToken;
     RecyclerView recyclerViewMessages;
     ApiManager1_0 apiManager;
     ApiManager2_0 apiManager2_0;
@@ -44,19 +48,26 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout mSwipeRefreshLayout;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        username = (TextView) findViewById(R.id.username);
-        date = (TextView) findViewById(R.id.date);
-        sendBtn = (Button) findViewById(R.id.sendBtn);
+        mPrefs = getSharedPreferences("authToken", 0);
+        //username = (TextView) findViewById(R.id.username);
+        //date = (TextView) findViewById(R.id.date);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         message = (EditText) findViewById(R.id.message);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        password = getIntent().getStringExtra("PASSWORD");
-        username.setText(getIntent().getStringExtra("USERNAME"));
+
+        sendBtn = (Button) findViewById(R.id.sendBtn);
+        Button profileBtn = (Button) findViewById(R.id.profileBtn);
+        Button contactBtn = (Button) findViewById(R.id.contactBtn);
+
+       // password = getIntent().getStringExtra("PASSWORD");
+        login = getIntent().getStringExtra("USERNAME");
+        authToken = mPrefs.getString("authToken", "null");
 
         apiManager = ((MyApplication) getApplication()).getApiManager1_0();
         apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
@@ -83,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,13 +102,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLogged = new Intent(MainActivity.this, ProfileActivity.class);
+                intentLogged.putExtra("LOGIN", login);
+                startActivity(intentLogged);
+            }
+        });
+
+        contactBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLogged = new Intent(MainActivity.this, ContactActivity.class);
+                startActivity(intentLogged);
+            }
+        });
+    }
 
     private void displayMessage() {
         progressBar.setVisibility(View.VISIBLE);
         // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
-        Call<List<Messages>> call = apiManager2_0.getMessages(Helper.createAuthToken(username.getText().toString(), password.toString()), 20, 0);
+        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 20, 0);
 
         call.enqueue(new Callback<List<Messages>>() {
             @Override
@@ -131,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             messages.setAttachments(attachments);
 
 
-            Call<ResultMessages> call = apiManager2_0.sendMessages(Helper.createAuthToken(username.getText().toString(), password.toString()), messages);
+            Call<ResultMessages> call = apiManager2_0.sendMessages(authToken, messages);
 
             call.enqueue(new Callback<ResultMessages>() {
                 @Override

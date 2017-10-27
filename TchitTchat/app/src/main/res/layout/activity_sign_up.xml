@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:text="Register !"
             android:textColor="@color/colorGray"
-            android:background="@color/colorPrimaryDark"/>
+            android:backgroundTint="@color/colorPrimary"/>
     </LinearLayout>
 
 

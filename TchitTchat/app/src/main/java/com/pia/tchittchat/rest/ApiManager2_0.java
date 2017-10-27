@@ -2,6 +2,7 @@ package com.pia.tchittchat.rest;
 
 import com.pia.tchittchat.model.Auth;
 import com.pia.tchittchat.model.Messages;
+import com.pia.tchittchat.model.Profile;
 import com.pia.tchittchat.model.Result;
 import com.pia.tchittchat.model.ResultMessages;
 
@@ -12,6 +13,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -25,8 +27,8 @@ public interface ApiManager2_0 {
     @GET("connect")
     Call<Result> connectWithAuth(@Header("Authorization") String authorization);
 
-    @GET("connect")
-    Call<Result> connect();
+    @GET("profile/{login}")
+    Call<Profile> getProfile(@Header("Authorization") String authorization, @Path("login") String login);
 
     @GET("messages")
     Call<List<Messages>> getMessages(@Header("Authorization") String authorization, @Query("limit") Integer limit, @Query("offset") Integer offeset);
