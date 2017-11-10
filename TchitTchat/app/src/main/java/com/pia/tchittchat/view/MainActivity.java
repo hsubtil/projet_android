@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.rest.MyAdapter;
 import com.pia.tchittchat.MyApplication;
@@ -23,13 +25,16 @@ import com.pia.tchittchat.model.Image;
 import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.ResultMessages;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerViewMessages;
     ApiManager1_0 apiManager;
     ApiManager2_0 apiManager2_0;
+
 
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -69,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMessages.setLayoutManager(mLayoutManager);
-
 
         /*DateFormat df = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
         String currentDate = df.format(Calendar.getInstance().getTime());
@@ -105,7 +110,9 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Messages>>() {
             @Override
             public void onResponse(Call<List<Messages>> call, Response<List<Messages>> response) {
-                RecyclerView.Adapter myAdapter = new MyAdapter(response.body());
+                //List<Messages> m = response.body();
+                //getMessageAttachments(m.get(2));
+                RecyclerView.Adapter myAdapter = new MyAdapter(response.body(), MainActivity.this);
                 recyclerViewMessages.setAdapter(myAdapter);
 
                 Toast.makeText(MainActivity.this, "Messages retrieved", Toast.LENGTH_LONG).show();
@@ -129,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
             messages.setLogin(username.getText().toString());
             messages.setMessage(message.getText().toString());
             messages.setUuid(UUID.randomUUID().toString());
-            Attachment attachments = new Attachment();
-            messages.setAttachments(attachments);
+            //String [] attachments;
+            //messages.setImage(attachments);
 
 
             Call<ResultMessages> call = apiManager2_0.sendMessages(Helper.createAuthToken(username.getText().toString(), password.toString()), messages);
@@ -157,24 +164,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getMessageAttachments(Messages message) {
-
+    public void getMessageAttachments(Messages message, final ImageView attachement) {
+        String [] images = message.getImage();
+        String fileName = "";
+        String [] imagesNames;
         progressBar.setVisibility(View.VISIBLE);
-        // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
-        Call<ImageView> call = apiManager2_0.getAttachements(Helper.createAuthToken(username.getText().toString(), password.toString()),message.getAttachments().getUuid(), message.getAttachments().getFilename());
+        if(images!= null){
+            imagesNames = new String[images.length];
+            if(images.length != 0){
+                for (int i = 0; i<images.length;i++){
+                    String [] filePath = images[i].split("/");
+                    fileName = filePath [filePath.length-1];
+                    imagesNames [i] = fileName;
+                }
+            }
 
-        call.enqueue(new Callback<ImageView>() {
+
+
+        String uuid = "msg-"+message.getUuid();
+        Call<ResponseBody> call = apiManager2_0.getAttachements(Helper.createAuthToken(username.getText().toString(), password.toString()),uuid, imagesNames[0]);
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ImageView> call, Response<ImageView> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    Glide.with(MainActivity.this)
+                            .load(response.body().bytes())
+                            .asBitmap()
+                            .placeholder(R.layout.message)
+                            .into(attachement);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             }
 
+
+
             @Override
-            public void onFailure(Call<ImageView> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
             }
         });
+        }
 
 
     }

@@ -10,15 +10,8 @@ public class Messages {
     String uuid;
     String login;
     String message;
-    Attachment attachments;
+    String [] images;
 
-    public Attachment getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Attachment attachments) {
-        this.attachments = attachments;
-    }
 
     public String getUuid() {
         return uuid;
@@ -42,5 +35,13 @@ public class Messages {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String[] getImage() {
+        return images;
+    }
+
+    public void setImage(String[] image) {
+        this.images = image;
     }
 }

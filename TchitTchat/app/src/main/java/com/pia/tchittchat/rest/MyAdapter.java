@@ -1,6 +1,8 @@
 package com.pia.tchittchat.rest;
 
+import android.content.Context;
 import android.media.Image;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -8,11 +10,14 @@ import android.view.View;
         import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.model.Messages;
+import com.pia.tchittchat.view.MainActivity;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
@@ -24,25 +29,28 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Messages> dataset;
+    private Context ActivityContext;
 
     // Provide a reference to the views for each data item
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView sender;
         public TextView message;
-        public ImageView image;
+        public ImageView attachement;
 
 
         public ViewHolder(View v) {
             super(v);
             sender = v.findViewById(R.id.sender);
             message = v.findViewById(R.id.message);
-            image = v.findViewById(R.id.image);
+            attachement = v.findViewById(R.id.attachement);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Messages> dataset) {
+    public MyAdapter(List<Messages> dataset, Context ActivityContext) {
+
         this.dataset = dataset;
+        this.ActivityContext = ActivityContext;
     }
 
     // Create new views (invoked by the layout manager)
@@ -60,6 +68,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - replace the contents of the view with that element
         holder.sender.setText(dataset.get(position).getLogin());
         holder.message.setText(dataset.get(position).getMessage());
+        if(dataset.get(position).getImage() != null){
+            if(dataset.get(position).getImage().length != 0)
+            if(ActivityContext instanceof MainActivity){
+                ((MainActivity)ActivityContext).getMessageAttachments(dataset.get(position),holder.attachement);
+            }
+        }
+
 
     }
 
@@ -68,4 +83,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public int getItemCount() {
         return dataset.size();
     }
+
+
+
+
 }
