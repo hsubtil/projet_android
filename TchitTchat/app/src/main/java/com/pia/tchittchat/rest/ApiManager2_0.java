@@ -2,6 +2,7 @@ package com.pia.tchittchat.rest;
 
 import android.widget.ImageView;
 
+import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.model.Auth;
 import com.pia.tchittchat.model.EditProfile;
 import com.pia.tchittchat.model.Messages;
@@ -11,6 +12,7 @@ import com.pia.tchittchat.model.ResultMessages;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -45,7 +47,7 @@ public interface ApiManager2_0 {
     @POST("register")
     Call<Result> registerUser( @Body Auth resultAuth );
 
-    @GET("files")
-    Call <ImageView> getAttachements (@Header("Authorization") String authorization, @Query( "uuid") String uuid, @Query("filename") String filename);
+    @GET("files/{uuid}/{filename}")
+    Call <ResponseBody> getAttachements (@Header("Authorization") String authorization, @Path("uuid") String uuid, @Path("filename") String filename);
 
 }
