@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                     Glide.with(MainActivity.this)
                             .load(response.body().bytes())
                             .asBitmap()
-                            .placeholder(R.layout.message)
+                            .placeholder(R.drawable.border)
                             .into(attachement);
 
                 } catch (IOException e) {
