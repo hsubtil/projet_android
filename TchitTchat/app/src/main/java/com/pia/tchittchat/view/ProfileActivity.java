@@ -1,8 +1,11 @@
 package com.pia.tchittchat.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.pia.tchittchat.MyApplication;
@@ -21,9 +24,9 @@ public class ProfileActivity extends AppCompatActivity {
     private SharedPreferences mPrefs;
     private TextView loginView;
     private TextView mailView;
+    private TextView editProfile;
     String login;
     //TODO : Add image handling
-    // TODO: Edit profile (Password, email, picture)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,16 @@ public class ProfileActivity extends AppCompatActivity {
         //View Elements
         loginView = (TextView) findViewById(R.id.profileLogin);
         mailView = (TextView) findViewById(R.id.profileMail);
+        editProfile = (Button) findViewById(R.id.editProfile);
+
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentEditProfile = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                intentEditProfile.putExtra("MAIL", mailView.getText().toString());
+                startActivity(intentEditProfile);
+            }
+        });
 
         String authToken = mPrefs.getString("authToken", "null");
         login = getIntent().getStringExtra("LOGIN");
@@ -44,8 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Profile> call, Response<Profile> response) {
                 if (response.body() != null) {
-                    loginView.setText(response.body().login);
-                    mailView.setText(response.body().email);
+                    loginView.setText(response.body().getLogin());
+                    mailView.setText(response.body().getEmail());
                 }
             }
 

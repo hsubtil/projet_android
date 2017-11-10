@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         // Api for get/post requests
         //apiManager = ((MyApplication) getApplication()).getApiManager1_0();
         apiManager2_0 =  ((MyApplication) getApplication()).getApiManager2_0();
+
+        // TODO : Change Token and put a timeout on it.
         checkConnectionToken();
 
         submitBtn.setOnClickListener ( new View.OnClickListener (){

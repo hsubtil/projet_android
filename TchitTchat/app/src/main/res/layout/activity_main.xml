@@ -7,103 +7,96 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/navBarMain">
-        <Button
-            android:id="@+id/profileBtn"
-            android:layout_width="25px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/colorGray"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Profile" />
-        <Button
-            android:id="@+id/contactBtn"
-            android:layout_width="25px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/colorGray"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Contact" />
-    </LinearLayout>
-
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/navBarMain"
-        android:layout_above="@+id/Footer">
+        android:orientation="vertical">
 
-        <ScrollView
-            android:id="@+id/Form"
+        <LinearLayout
+            android:id="@+id/navBarMain"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/Infos"
+            <Button
+                android:id="@+id/profileBtn"
+                android:layout_width="25px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Profile"
+                android:textColor="@color/colorGray" />
+
+            <Button
+                android:id="@+id/contactBtn"
+                android:layout_width="25px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Contact"
+                android:textColor="@color/colorGray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Infos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="420dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/navBarMain">
 
-                <!--<TextView-->
-                    <!--android:id="@+id/username"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:fontFamily="monospace"-->
-                    <!--android:padding="15dp"-->
-                    <!--android:textSize="15sp" />-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/date"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/username"-->
-                    <!--android:fontFamily="monospace"-->
-                    <!--android:padding="15dp"-->
-                    <!--android:textSize="15sp" />-->
-
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewMessages"
+                <ScrollView
+                    android:id="@+id/Form"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical" />
+                    android:layout_height="match_parent">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible" />
-            </LinearLayout>
-        </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
-    <LinearLayout
-        android:id="@+id/Footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewMessages"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical" />
 
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="200px"
+                </ScrollView>
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+
+            <!--                <ProgressBar
+                                android:id="@+id/progressBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="invisible" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Footer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Type your message" />
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/Infos"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/sendBtn"
-            android:layout_width="25px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/colorGray"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Send" />
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Type your message" />
 
+            <Button
+                android:id="@+id/sendBtn"
+                android:layout_width="25px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Send"
+                android:textColor="@color/colorGray" />
+        </LinearLayout>
 
     </LinearLayout>
+
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.pia.tchittchat.rest;
 
 import com.pia.tchittchat.model.Auth;
+import com.pia.tchittchat.model.EditProfile;
 import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.Profile;
 import com.pia.tchittchat.model.Result;
@@ -30,6 +31,9 @@ public interface ApiManager2_0 {
     @GET("profile/{login}")
     Call<Profile> getProfile(@Header("Authorization") String authorization, @Path("login") String login);
 
+    @POST("profile")
+    Call<ResultMessages> editProfile( @Header("Authorization") String authorization, @Body EditProfile resultAuth );
+
     @GET("messages")
     Call<List<Messages>> getMessages(@Header("Authorization") String authorization, @Query("limit") Integer limit, @Query("offset") Integer offeset);
 
@@ -38,6 +42,7 @@ public interface ApiManager2_0 {
     
     @POST("register")
     Call<Result> registerUser(  @Body Auth resultAuth );
+
 
 
 

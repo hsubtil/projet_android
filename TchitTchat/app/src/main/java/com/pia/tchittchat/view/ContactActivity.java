@@ -51,8 +51,8 @@ public class ContactActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Profile> call, Response<Profile> response) {
                         if (response.body() != null) {
-                            loginView.setText(response.body().login);
-                            mailView.setText(response.body().email);
+                            loginView.setText(response.body().getLogin());
+                            mailView.setText(response.body().getEmail());
                         }
                         else{
                             Toast.makeText(ContactActivity.this, "User not found", Toast.LENGTH_LONG).show();

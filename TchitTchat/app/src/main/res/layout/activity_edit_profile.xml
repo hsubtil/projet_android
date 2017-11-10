@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.pia.tchittchat.view.EditProfileActivity">
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/scrollViewEditProfile">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/profileHeader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:text="Profile"
+                android:textColor="@color/colorAccent"/>
+            <EditText
+                android:id="@+id/edit_profile_password"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:hint="New Password"
+                android:padding="15dp"/>
+            <EditText
+                android:id="@+id/edit_profile_password_verif"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:hint="New Password verification"
+                android:padding="15dp"/>
+            <TextView
+                android:id="@+id/edit_profile_current_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Current mail "
+                android:layout_marginTop="20dp"/>
+            <EditText
+                android:id="@+id/edit_profile_mail"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="monospace"
+                android:hint="New Email"
+                android:padding="15dp"/>
+            <ImageView
+                android:id="@+id/edit_profile_current_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_launcher_round"/>
+   <!--         TODO : Modify picture-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="TODO modify Picture "
+                android:layout_marginTop="20dp"/>
+            <Button
+                android:id="@+id/edit_profile_submit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/colorGray"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Submit"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

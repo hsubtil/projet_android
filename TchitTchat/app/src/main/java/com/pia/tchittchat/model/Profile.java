@@ -5,9 +5,9 @@ package com.pia.tchittchat.model;
  */
 
 public class Profile {
-    public String login;
-    public String picture;
-    public String email;
+    private String login;
+    private String picture;
+    private String email;
 
 
     public Profile() {

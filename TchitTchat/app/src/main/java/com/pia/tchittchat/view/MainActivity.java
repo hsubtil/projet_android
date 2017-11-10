@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     TextView date;
     TextView username;
     Button sendBtn;
-    ProgressBar progressBar;
     EditText message;
     String login;
     String authToken;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         mPrefs = getSharedPreferences("authToken", 0);
         //username = (TextView) findViewById(R.id.username);
         //date = (TextView) findViewById(R.id.date);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         message = (EditText) findViewById(R.id.message);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
@@ -122,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayMessage() {
-        progressBar.setVisibility(View.VISIBLE);
         // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
         Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 20, 0);
 
@@ -133,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
                 recyclerViewMessages.setAdapter(myAdapter);
 
                 Toast.makeText(MainActivity.this, "Messages retrieved", Toast.LENGTH_LONG).show();
-
-                progressBar.setVisibility(View.INVISIBLE);
 
                 mSwipeRefreshLayout.setRefreshing(false);
 
