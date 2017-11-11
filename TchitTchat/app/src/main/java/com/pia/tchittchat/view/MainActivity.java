@@ -28,10 +28,14 @@ import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.ResultMessages;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import io.socket.client.Manager;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +45,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
+    private     Socket mSocket;
     TextView date;
     TextView username;
     Button sendBtn;
@@ -84,11 +89,22 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMessages.setLayoutManager(mLayoutManager);
+        /*TEST SOCKET*/
+        Manager.Options options = new Manager.Options();
+        options.path = "/chat-rest/socket.io";
+        URI test = URI.create("https://training.loicortola.com/");
+        Manager mManager = new Manager(test, options);
+        mSocket = mManager.socket("/2.0/ws");
 
-        /*DateFormat df = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
-        String currentDate = df.format(Calendar.getInstance().getTime());
+        mSocket.on("inbound_msg",onNewMessage);
+        mSocket.connect();
+        /*mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                mSocket.emit("")
+            }
+        })*/
 
-        date.setText(currentDate);*/
         displayMessage();
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -138,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 RecyclerView.Adapter myAdapter = new MyAdapter(response.body(), MainActivity.this);
                 recyclerViewMessages.setAdapter(myAdapter);
 
-                Toast.makeText(MainActivity.this, "Messages retrieved", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "New message !", Toast.LENGTH_LONG).show();
 
                 mSwipeRefreshLayout.setRefreshing(false);
 
@@ -154,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     private void sendMessage() {
         {
             Messages messages = new Messages();
-            messages.setLogin(username.getText().toString());
+            messages.setLogin(login);
             messages.setMessage(message.getText().toString());
             messages.setUuid(UUID.randomUUID().toString());
             //String [] attachments;
@@ -162,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             Call<ResultMessages> call = apiManager2_0.sendMessages(authToken, messages);
-
+            //mSocket.emit("outbound_msg",login,authToken,messages);
             call.enqueue(new Callback<ResultMessages>() {
                 @Override
                 public void onResponse(Call<ResultMessages> call, Response<ResultMessages> response) {
@@ -234,4 +250,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            displayMessage();
+            return;
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+    }
 }
