@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         String [] images = message.getImage();
         String fileName = "";
         String [] imagesNames;
-        progressBar.setVisibility(View.VISIBLE);
+
         if(images!= null){
             imagesNames = new String[images.length];
             if(images.length != 0){
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         String uuid = "msg-"+message.getUuid();
-        Call<ResponseBody> call = apiManager2_0.getAttachements(Helper.createAuthToken(username.getText().toString(), password.toString()),uuid, imagesNames[0]);
+        Call<ResponseBody> call = apiManager2_0.getAttachements(authToken,uuid, imagesNames[0]);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
