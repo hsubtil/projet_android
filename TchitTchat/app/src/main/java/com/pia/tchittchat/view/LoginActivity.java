@@ -16,13 +16,15 @@ import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.model.Result;
 
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private Button submitBtn;
-    private Button signUpBtn ;
+    private Button signUpBtn;
     private EditText username;
     private EditText password;
     private ProgressBar progressBar;
@@ -45,38 +47,40 @@ public class LoginActivity extends AppCompatActivity {
 
         // Api for get/post requests
         //apiManager = ((MyApplication) getApplication()).getApiManager1_0();
-        apiManager2_0 =  ((MyApplication) getApplication()).getApiManager2_0();
+        apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
 
         // TODO : Change Token and put a timeout on it.
         checkConnectionToken();
 
-        submitBtn.setOnClickListener ( new View.OnClickListener (){
+        submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v){
+            public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-               // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
+                // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
 
-               // String mString = mPrefs.getString("tag", "default_value_if_variable_not_found");
+                // String mString = mPrefs.getString("tag", "default_value_if_variable_not_found");
                 SharedPreferences.Editor mEditor = mPrefs.edit();
                 String authToken = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
                 mEditor.putString("authToken", authToken).apply();
+                // Add a time to check timeout
+                mEditor.putLong("lastLogin", new Date().getTime());
+                mEditor.commit();
+
                 Call<Result> call = apiManager2_0.connectWithAuth(authToken);
                 call.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
-                        if(response.body()!=null)
-                        {
-                            if(response.body().status == 200){
-                            Toast.makeText(LoginActivity.this,"Hello",Toast.LENGTH_LONG).show();
-                            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-                            intentLogged.putExtra("USERNAME", username.getText().toString());
-                            intentLogged.putExtra("PASSWORD", password.getText().toString());
+                        if (response.body() != null) {
+                            if (response.body().status == 200) {
+                                Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
+                                Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+                                intentLogged.putExtra("USERNAME", username.getText().toString());
+                                intentLogged.putExtra("PASSWORD", password.getText().toString());
                                 startActivity(intentLogged);
                             }
 
-                        }
-                        else {
-                            Toast.makeText(LoginActivity.this,"Login or password incorrect",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Login or password incorrect", Toast.LENGTH_LONG).show();
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
@@ -90,9 +94,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        signUpBtn.setOnClickListener(new View.OnClickListener(){
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v){
+            public void onClick(View v) {
                 Intent intentSignUp = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intentSignUp);
             }
@@ -101,31 +105,41 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void checkConnectionToken(){
-        String authToken = mPrefs.getString("authToken", "null");
-        Call<Result> call = apiManager2_0.connectWithAuth(authToken);
-        call.enqueue(new Callback<Result>() {
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                if (response.body() != null) {
-                    if (response.body().status == 200) {
-                        Toast.makeText(LoginActivity.this, "Hello again", Toast.LENGTH_LONG).show();
-                        Intent intentalredyLogged = new Intent(LoginActivity.this, MainActivity.class);
-                        intentalredyLogged.putExtra("USERNAME", "hugo");
-                        intentalredyLogged.putExtra("PASSWORD", "hugo");
-                        startActivity(intentalredyLogged);
+    private void checkConnectionToken() {
+        Long lastLogin = mPrefs.getLong("lastLogin", 36);
+        long acutallogin = new Date().getTime();
+        if (lastLogin != 0 && (acutallogin - lastLogin) < 1000000) {
+
+            String authToken = mPrefs.getString("authToken", "null");
+
+            Call<Result> call = apiManager2_0.connectWithAuth(authToken);
+            call.enqueue(new Callback<Result>() {
+                @Override
+                public void onResponse(Call<Result> call, Response<Result> response) {
+                    if (response.body() != null) {
+                        if (response.body().status == 200) {
+                            Toast.makeText(LoginActivity.this, "Hello again", Toast.LENGTH_LONG).show();
+                            Intent intentalredyLogged = new Intent(LoginActivity.this, MainActivity.class);
+                            intentalredyLogged.putExtra("USERNAME", "hugo");
+                            intentalredyLogged.putExtra("PASSWORD", "hugo");
+                            startActivity(intentalredyLogged);
+                        }
+
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
                     }
-
-                } else {
-                    Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<Result> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+        else{
+            Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
+        }
+
     }
 }
 
