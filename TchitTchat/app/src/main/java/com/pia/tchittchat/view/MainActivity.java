@@ -26,6 +26,7 @@ import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.model.Image;
 import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.ResultMessages;
+import com.pia.tchittchat.rest.NetworkCom;
 
 import java.io.IOException;
 import java.net.URI;
@@ -45,7 +46,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
-    private     Socket mSocket;
+   // private Socket mSocket;
+    private  NetworkCom socket;
     TextView date;
     TextView username;
     Button sendBtn;
@@ -66,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mPrefs = getSharedPreferences("authToken", 0);
-        //username = (TextView) findViewById(R.id.username);
-        //date = (TextView) findViewById(R.id.date);
         message = (EditText) findViewById(R.id.message);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMessages.setLayoutManager(mLayoutManager);
         /*TEST SOCKET*/
+        socket = new NetworkCom();
+        socket.getmSocket().on("inbound_msg",onNewMessage);
+        /*
         Manager.Options options = new Manager.Options();
         options.path = "/chat-rest/socket.io";
         URI test = URI.create("https://training.loicortola.com/");
@@ -238,8 +241,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
@@ -261,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        mSocket.disconnect();
+        socket.destroySocket();
     }
 }

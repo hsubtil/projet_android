@@ -15,9 +15,16 @@ import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
 import com.pia.tchittchat.model.Result;
+import com.pia.tchittchat.rest.NetworkCom;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private SharedPreferences mPrefs;
     private ApiManager2_0 apiManager2_0;
+    private NetworkCom socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +50,17 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mPrefs = getSharedPreferences("authToken", 0);
 
-//        ConnectionManager connect = new ConnectionManager();
-//        InputStream inputStream = connect.getConnection();
 
         // Api for get/post requests
         //apiManager = ((MyApplication) getApplication()).getApiManager1_0();
         apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
+
+        //Socket
+        socket = new NetworkCom();
+        socket.getmSocket().on("auth_success",onAuthSuccess);
+        socket.getmSocket().on("auth_failed",onAuthFail);
+
+
 
         checkConnectionToken();
 
@@ -55,43 +68,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                // Call<Result> call = apiManager.getUser(username.getText().toString(), password.getText().toString());
 
-                // String mString = mPrefs.getString("tag", "default_value_if_variable_not_found");
                 SharedPreferences.Editor mEditor = mPrefs.edit();
-                String authToken = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
-                String authLogin = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
+                String authToken = Helper.createAuthToken(username.getText().toString(),password.getText().toString());
                 mEditor.putString("authToken", authToken).apply();
-                // Add a time to check timeout
-                mEditor.putLong("lastLogin", new Date().getTime());
-                mEditor.putString("authLogin",username.getText().toString());
+                mEditor.putLong("lastLogin", new Date().getTime());                 // Add a time to check timeout
+                mEditor.putString("authLogin",username.getText().toString());     // Add Login
                 mEditor.commit();
 
-                Call<Result> call = apiManager2_0.connectWithAuth(authToken);
-                call.enqueue(new Callback<Result>() {
-                    @Override
-                    public void onResponse(Call<Result> call, Response<Result> response) {
-                        if (response.body() != null) {
-                            if (response.body().status == 200) {
-                                Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
-                                Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-                                intentLogged.putExtra("USERNAME", username.getText().toString());
-                                intentLogged.putExtra("PASSWORD", password.getText().toString());
-                                startActivity(intentLogged);
-                            }
-
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Login or password incorrect", Toast.LENGTH_LONG).show();
-                        }
-
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Result> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
+                socket.emitConnect(username.getText().toString(),password.getText().toString());
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -112,8 +98,12 @@ public class LoginActivity extends AppCompatActivity {
         if (lastLogin != 0 && (acutallogin - lastLogin) < 1000000) {
 
             String authToken = mPrefs.getString("authToken", "null");
-
-            Call<Result> call = apiManager2_0.connectWithAuth(authToken);
+            Toast.makeText(LoginActivity.this, " again !", Toast.LENGTH_LONG).show();
+            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+            intentLogged.putExtra("USERNAME", username.getText().toString());
+            intentLogged.putExtra("PASSWORD", password.getText().toString());
+            startActivity(intentLogged);
+            /*Call<Result> call = apiManager2_0.connectWithAuth(authToken);
             call.enqueue(new Callback<Result>() {
                 @Override
                 public void onResponse(Call<Result> call, Response<Result> response) {
@@ -135,12 +125,50 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure(Call<Result> call, Throwable t) {
                     t.printStackTrace();
                 }
-            });
+            });*/
         }
         else{
             Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
         }
 
     }
+
+    private Emitter.Listener onAuthSuccess = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //TODO
+            // 	Payload: {"login":"foo","token":"session-token1234","message": "Authentication successful"}
+            JSONObject obk = (JSONObject) args[0];
+
+            String token = "";
+            try {
+                token = obk.getString("token");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            SharedPreferences.Editor mEditor = mPrefs.edit();
+            // Shared preference declaration
+            mEditor.putString("sessionToken", token).apply();
+
+            Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
+            Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
+            intentLogged.putExtra("USERNAME", username.getText().toString());
+            intentLogged.putExtra("PASSWORD", password.getText().toString());
+            startActivity(intentLogged);
+
+            return;
+        }
+    };
+
+
+    private Emitter.Listener onAuthFail = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Toast.makeText(LoginActivity.this, "Authentication Failed. Please try again.", Toast.LENGTH_LONG).show();
+           // progressBar.setVisibility(View.INVISIBLE); TODO Check why it's failing
+            return;
+        }
+    };
 }
 
