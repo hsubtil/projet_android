@@ -94,7 +94,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void checkPassword(EditProfile newProfile){
-        // TODO Check password length + carac + is the same ???
         if(newPassword.getText().length()==0) {
             // Change nothing
         }

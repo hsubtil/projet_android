@@ -49,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         //apiManager = ((MyApplication) getApplication()).getApiManager1_0();
         apiManager2_0 = ((MyApplication) getApplication()).getApiManager2_0();
 
-        // TODO : Change Token and put a timeout on it.
         checkConnectionToken();
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +60,11 @@ public class LoginActivity extends AppCompatActivity {
                 // String mString = mPrefs.getString("tag", "default_value_if_variable_not_found");
                 SharedPreferences.Editor mEditor = mPrefs.edit();
                 String authToken = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
+                String authLogin = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
                 mEditor.putString("authToken", authToken).apply();
                 // Add a time to check timeout
                 mEditor.putLong("lastLogin", new Date().getTime());
+                mEditor.putString("authLogin",username.getText().toString());
                 mEditor.commit();
 
                 Call<Result> call = apiManager2_0.connectWithAuth(authToken);

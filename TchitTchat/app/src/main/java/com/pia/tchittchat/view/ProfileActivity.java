@@ -51,8 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         String authToken = mPrefs.getString("authToken", "null");
-        login = getIntent().getStringExtra("LOGIN");
-        Call<Profile> call = apiManager2_0.getProfile(authToken,login);
+        login = mPrefs.getString("authLogin", "null");
+        //login = getIntent().getStringExtra("LOGIN");
+        Call<Profile> call = apiManager2_0.getProfile(authToken, login);
         call.enqueue(new Callback<Profile>() {
             @Override
             public void onResponse(Call<Profile> call, Response<Profile> response) {
