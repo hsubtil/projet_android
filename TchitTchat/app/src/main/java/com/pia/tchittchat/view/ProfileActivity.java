@@ -6,14 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
+import com.pia.tchittchat.model.Image;
+import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.Profile;
 import com.pia.tchittchat.model.Result;
 import com.pia.tchittchat.rest.ApiManager2_0;
 
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +32,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView loginView;
     private TextView mailView;
     private TextView editProfile;
+    private ImageView edit_profile_current_picture;
     String login;
-    //TODO : Add image handling
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
         loginView = (TextView) findViewById(R.id.profileLogin);
         mailView = (TextView) findViewById(R.id.profileMail);
         editProfile = (Button) findViewById(R.id.editProfile);
+        edit_profile_current_picture = (ImageView) findViewById(R.id.edit_profile_current_picture);
 
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        String authToken = mPrefs.getString("authToken", "null");
+        final String authToken = mPrefs.getString("authToken", "null");
         login = mPrefs.getString("authLogin", "null");
         //login = getIntent().getStringExtra("LOGIN");
         Call<Profile> call = apiManager2_0.getProfile(authToken, login);
@@ -58,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Profile> call, Response<Profile> response) {
                 if (response.body() != null) {
+                    getProfilePictures(response.body(), edit_profile_current_picture,authToken);
                     loginView.setText(response.body().getLogin());
                     mailView.setText(response.body().getEmail());
                 }
@@ -69,5 +78,43 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getProfilePictures(Profile profil, final ImageView edit_profile_current_picture, String authToken) {
+        String profilPicture = profil.getPicture();
+        String fileName = "";
+
+        if (profilPicture != null) {
+            String[] filePath = profilPicture.split("/");
+            fileName = filePath[filePath.length - 1];
+
+            Call<ResponseBody> call = apiManager2_0.getProfilePicture(authToken, fileName);
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        Glide.with(ProfileActivity.this)
+                                .load(response.body().bytes())
+                                .asBitmap()
+                                .placeholder(R.drawable.border)
+                                .into(edit_profile_current_picture);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+
 }
 

@@ -50,4 +50,7 @@ public interface ApiManager2_0 {
     @GET("files/{uuid}/{filename}")
     Call <ResponseBody> getAttachements (@Header("Authorization") String authorization, @Path("uuid") String uuid, @Path("filename") String filename);
 
+    @GET("files/{filename}")
+    Call <ResponseBody> getProfilePicture (@Header("Authorization") String authorization, @Path("filename") String filename);
+
 }
