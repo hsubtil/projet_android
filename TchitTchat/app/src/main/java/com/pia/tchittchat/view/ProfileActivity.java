@@ -96,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Glide.with(ProfileActivity.this)
                                 .load(response.body().bytes())
                                 .asBitmap()
-                                .placeholder(R.drawable.border)
+                                .placeholder(R.drawable.ic_launcher_background)
                                 .into(edit_profile_current_picture);
 
                     } catch (IOException e) {
