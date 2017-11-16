@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
    // private Socket mSocket;
     private  NetworkCom socket;
     TextView date;
-    TextView username;
     Button sendBtn;
     EditText message;
     String login;
@@ -78,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
         Button profileBtn = (Button) findViewById(R.id.profileBtn);
         Button contactBtn = (Button) findViewById(R.id.contactBtn);
 
-       // password = getIntent().getStringExtra("PASSWORD");
-        login = getIntent().getStringExtra("USERNAME");
         authToken = mPrefs.getString("authToken", "null");
 
         apiManager = ((MyApplication) getApplication()).getApiManager1_0();

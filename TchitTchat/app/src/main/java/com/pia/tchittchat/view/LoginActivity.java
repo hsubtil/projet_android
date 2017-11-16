@@ -67,17 +67,15 @@ public class LoginActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
+                //setProgressBarVisible();
 
                 SharedPreferences.Editor mEditor = mPrefs.edit();
-                String authToken = Helper.createAuthToken(username.getText().toString(),password.getText().toString());
-                mEditor.putString("authToken", authToken).apply();
                 mEditor.putLong("lastLogin", new Date().getTime());                 // Add a time to check timeout
                 mEditor.putString("authLogin",username.getText().toString());     // Add Login
                 mEditor.commit();
-
                 socket.emitConnect(username.getText().toString(),password.getText().toString());
-                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(LoginActivity.this, "Authentication Failed. Please try again.", Toast.LENGTH_LONG).show();
+               // progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -95,13 +93,10 @@ public class LoginActivity extends AppCompatActivity {
     private void checkConnectionToken() {
         Long lastLogin = mPrefs.getLong("lastLogin", 36);
         long acutallogin = new Date().getTime();
-        if (lastLogin != 0 && (acutallogin - lastLogin) < 1000000) {
+        if (lastLogin != 0 && (acutallogin - lastLogin) < 10000) {
 
-            String authToken = mPrefs.getString("authToken", "null");
-            Toast.makeText(LoginActivity.this, " again !", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Hello again !", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-            intentLogged.putExtra("USERNAME", username.getText().toString());
-            intentLogged.putExtra("PASSWORD", password.getText().toString());
             startActivity(intentLogged);
             /*Call<Result> call = apiManager2_0.connectWithAuth(authToken);
             call.enqueue(new Callback<Result>() {
@@ -150,6 +145,8 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor mEditor = mPrefs.edit();
             // Shared preference declaration
             mEditor.putString("sessionToken", token).apply();
+            String authToken = Helper.createAuthToken(username.getText().toString(),password.getText().toString());
+            mEditor.putString("authToken", authToken).apply(); // Create / update TOKEN
 
             Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
@@ -165,10 +162,17 @@ public class LoginActivity extends AppCompatActivity {
     private Emitter.Listener onAuthFail = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Toast.makeText(LoginActivity.this, "Authentication Failed. Please try again.", Toast.LENGTH_LONG).show();
-           // progressBar.setVisibility(View.INVISIBLE); TODO Check why it's failing
             return;
         }
     };
+
+    private void setProgressBarInvisible(){
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void setProgressBarVisible(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
 }
 

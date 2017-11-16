@@ -19,6 +19,7 @@ import com.pia.tchittchat.model.ResultMessages;
 import com.pia.tchittchat.rest.ApiManager2_0;
 
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -85,6 +86,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         if (response.body() != null) {
                             if (response.code() == 200) {
                                 SharedPreferences.Editor mEditor = mPrefs.edit();
+                                mEditor.putLong("lastLogin", 0);                 // Add a time to check timeout
+                                mEditor.commit();
                                 Intent intentLogged = new Intent(EditProfileActivity.this, LoginActivity.class);
                                 startActivity(intentLogged);
                             } else {
