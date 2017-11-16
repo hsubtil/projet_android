@@ -94,7 +94,7 @@ public class ContactActivity extends AppCompatActivity {
                         Glide.with(ContactActivity.this)
                                 .load(response.body().bytes())
                                 .asBitmap()
-                                .placeholder(R.drawable.border)
+                                .placeholder(R.drawable.ic_launcher_background)
                                 .into(contact_picture);
 
                     } catch (IOException e) {

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     String login;
     String authToken;
     RecyclerView recyclerViewMessages;
+    ScrollView Form;
     ApiManager1_0 apiManager;
     ApiManager2_0 apiManager2_0;
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         message = (EditText) findViewById(R.id.message);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-
+        Form = (ScrollView) findViewById(R.id.Form);
         sendBtn = (Button) findViewById(R.id.sendBtn);
         Button profileBtn = (Button) findViewById(R.id.profileBtn);
         Button contactBtn = (Button) findViewById(R.id.contactBtn);
@@ -109,12 +111,15 @@ public class MainActivity extends AppCompatActivity {
         })*/
 
         displayMessage();
+        Form.scrollTo(0, Form.getBottom());
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh items
                 displayMessage();
+                Form.scrollTo(0, Form.getBottom());
+
             }
         });
 
@@ -146,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayMessage() {
-        // Call<List<Messages>> call = apiManager.getMessages(username.getText().toString(), password.toString());
-        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 20, 0);
+        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 100, 0);
 
         call.enqueue(new Callback<List<Messages>>() {
             @Override
