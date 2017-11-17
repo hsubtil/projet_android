@@ -68,6 +68,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - replace the contents of the view with that element
         holder.sender.setText(dataset.get(position).getLogin());
         holder.message.setText(dataset.get(position).getMessage());
+
         if(dataset.get(position).getImage() != null){
             if(dataset.get(position).getImage().length != 0)
             if(ActivityContext instanceof MainActivity){

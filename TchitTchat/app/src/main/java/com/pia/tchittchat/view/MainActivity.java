@@ -148,13 +148,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayMessage() {
-        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 100, 0);
+        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 200, 0);
 
         call.enqueue(new Callback<List<Messages>>() {
             @Override
             public void onResponse(Call<List<Messages>> call, Response<List<Messages>> response) {
-                //List<Messages> m = response.body();
-                //getMessageAttachments(m.get(2));
+
                 RecyclerView.Adapter myAdapter = new MyAdapter(response.body(), MainActivity.this);
                 recyclerViewMessages.setAdapter(myAdapter);
 
@@ -208,46 +207,46 @@ public class MainActivity extends AppCompatActivity {
     public void getMessageAttachments(Messages message, final ImageView attachement) {
         String [] images = message.getImage();
         String fileName = "";
-        String [] imagesNames;
+
 
         if(images!= null){
-            imagesNames = new String[images.length];
             if(images.length != 0){
                 for (int i = 0; i<images.length;i++){
                     String [] filePath = images[i].split("/");
                     fileName = filePath [filePath.length-1];
-                    imagesNames [i] = fileName;
+
+                    String uuid = "msg-"+message.getUuid();
+                    Call<ResponseBody> call = apiManager2_0.getAttachements(authToken,uuid, fileName);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+                                Glide.with(MainActivity.this)
+                                        .load(response.body().bytes())
+                                        .asBitmap()
+                                        .placeholder(R.drawable.border)
+                                        .into(attachement);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                }
                 }
             }
 
 
 
-        String uuid = "msg-"+message.getUuid();
-        Call<ResponseBody> call = apiManager2_0.getAttachements(authToken,uuid, imagesNames[0]);
 
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    Glide.with(MainActivity.this)
-                            .load(response.body().bytes())
-                            .asBitmap()
-                            .placeholder(R.drawable.border)
-                            .into(attachement);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-        }
 
 
     }

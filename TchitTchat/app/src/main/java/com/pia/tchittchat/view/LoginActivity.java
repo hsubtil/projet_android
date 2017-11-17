@@ -148,10 +148,8 @@ public class LoginActivity extends AppCompatActivity {
             String authToken = Helper.createAuthToken(username.getText().toString(),password.getText().toString());
             mEditor.putString("authToken", authToken).apply(); // Create / update TOKEN
 
-            Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
+           // Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
-            intentLogged.putExtra("USERNAME", username.getText().toString());
-            intentLogged.putExtra("PASSWORD", password.getText().toString());
             startActivity(intentLogged);
 
             return;
