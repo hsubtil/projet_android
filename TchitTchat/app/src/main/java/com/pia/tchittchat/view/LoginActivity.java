@@ -68,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //setProgressBarVisible();
-
                 SharedPreferences.Editor mEditor = mPrefs.edit();
                 mEditor.putLong("lastLogin", new Date().getTime());                 // Add a time to check timeout
                 mEditor.putString("authLogin",username.getText().toString());     // Add Login
@@ -93,34 +92,10 @@ public class LoginActivity extends AppCompatActivity {
     private void checkConnectionToken() {
         Long lastLogin = mPrefs.getLong("lastLogin", 36);
         long acutallogin = new Date().getTime();
-        if (lastLogin != 0 && (acutallogin - lastLogin) < 10000) {
-
+        if (lastLogin != 0 && (acutallogin - lastLogin) < 300000) {
             Toast.makeText(LoginActivity.this, "Hello again !", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intentLogged);
-            /*Call<Result> call = apiManager2_0.connectWithAuth(authToken);
-            call.enqueue(new Callback<Result>() {
-                @Override
-                public void onResponse(Call<Result> call, Response<Result> response) {
-                    if (response.body() != null) {
-                        if (response.body().status == 200) {
-                            Toast.makeText(LoginActivity.this, "Hello again", Toast.LENGTH_LONG).show();
-                            Intent intentalredyLogged = new Intent(LoginActivity.this, MainActivity.class);
-                            intentalredyLogged.putExtra("USERNAME", "hugo");
-                            intentalredyLogged.putExtra("PASSWORD", "hugo");
-                            startActivity(intentalredyLogged);
-                        }
-
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Result> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });*/
         }
         else{
             Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
@@ -163,14 +138,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
     };
-
-    private void setProgressBarInvisible(){
-        progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    private void setProgressBarVisible(){
-        progressBar.setVisibility(View.VISIBLE);
-    }
 
 }
 

@@ -29,6 +29,9 @@ import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.ResultMessages;
 import com.pia.tchittchat.rest.NetworkCom;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -49,18 +52,16 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences mPrefs;
    // private Socket mSocket;
     private  NetworkCom socket;
-    TextView date;
-    Button sendBtn;
-    EditText message;
-    String login;
-    String authToken;
-    RecyclerView recyclerViewMessages;
-    ScrollView Form;
-    ApiManager1_0 apiManager;
-    ApiManager2_0 apiManager2_0;
-
-
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView date;
+    private Button sendBtn;
+    private EditText message;
+    private String login;
+    private String authToken;
+    private RecyclerView recyclerViewMessages;
+    private ScrollView Form;
+    private ApiManager1_0 apiManager;
+    private ApiManager2_0 apiManager2_0;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
 
@@ -91,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         /*TEST SOCKET*/
         socket = new NetworkCom();
         socket.getmSocket().on("inbound_msg",onNewMessage);
+        socket.getmSocket().on("post_success_msg",postSuccess);
+        socket.getmSocket().on("bad_request_msg",badRequest);
+        socket.getmSocket().on("user_typing_inbound_msg",typingInbound);
         /*
         Manager.Options options = new Manager.Options();
         options.path = "/chat-rest/socket.io";
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         displayMessage();
         Form.scrollTo(0, Form.getBottom());
+
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayMessage() {
-        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 200, 0);
+        Call<List<Messages>> call = apiManager2_0.getMessages(authToken, 20, 0);
 
         call.enqueue(new Callback<List<Messages>>() {
             @Override
@@ -171,12 +176,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        {
+        String login =  mPrefs.getString("authLogin", "null");
+        String sessionToken =  mPrefs.getString("sessionToken", "null");
+       // String [] attachments = new String[0];
+        socket.emitUserTyping(login,sessionToken);
+//        socket.emitMessage(login,sessionToken,UUID.randomUUID().toString(),message.getText().toString());
+
             Messages messages = new Messages();
             messages.setLogin(login);
             messages.setMessage(message.getText().toString());
             messages.setUuid(UUID.randomUUID().toString());
-            //String [] attachments;
+            String [] attachments;
             //messages.setImage(attachments);
 
 
@@ -201,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }
+
     }
 
     public void getMessageAttachments(Messages message, final ImageView attachement) {
@@ -255,6 +265,45 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void call(Object... args) {
             displayMessage();
+            return;
+        }
+    };
+
+    private Emitter.Listener postSuccess = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obk = (JSONObject) args[0];
+
+            String uuid = "";
+            try {
+                uuid = obk.getString("uuid");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+    };
+    private Emitter.Listener badRequest = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obk = (JSONObject) args[0];
+
+
+            return;
+        }
+    };
+
+    private Emitter.Listener typingInbound = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obk = (JSONObject) args[0];
+            String user = "";
+            try {
+                user = obk.getString("login");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             return;
         }
     };
