@@ -73,8 +73,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditProfile newProfile = new EditProfile();
-                //Check double password
-                //Check if empty
+                //Check on info
                 checkMail(newProfile);
                 checkPassword(newProfile);
                 // Send new profile
@@ -159,7 +158,4 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 }

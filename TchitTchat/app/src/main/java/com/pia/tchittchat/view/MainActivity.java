@@ -7,39 +7,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.pia.tchittchat.model.Attachment;
 import com.pia.tchittchat.rest.MyAdapter;
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
 import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.model.Image;
 import com.pia.tchittchat.model.Messages;
 import com.pia.tchittchat.model.ResultMessages;
-import com.pia.tchittchat.rest.NetworkCom;
+import com.pia.tchittchat.tools.NetworkCom;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.socket.client.Manager;
-import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -50,7 +42,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
-   // private Socket mSocket;
     private  NetworkCom socket;
     private TextView date;
     private Button sendBtn;
@@ -89,27 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMessages.setLayoutManager(mLayoutManager);
-        /*TEST SOCKET*/
+        /********SOCKET INIT********/
         socket = new NetworkCom();
         socket.getmSocket().on("inbound_msg",onNewMessage);
         socket.getmSocket().on("post_success_msg",postSuccess);
         socket.getmSocket().on("bad_request_msg",badRequest);
         socket.getmSocket().on("user_typing_inbound_msg",typingInbound);
-        /*
-        Manager.Options options = new Manager.Options();
-        options.path = "/chat-rest/socket.io";
-        URI test = URI.create("https://training.loicortola.com/");
-        Manager mManager = new Manager(test, options);
-        mSocket = mManager.socket("/2.0/ws");
-
-        mSocket.on("inbound_msg",onNewMessage);
-        mSocket.connect();
-        /*mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                mSocket.emit("")
-            }
-        })*/
 
         displayMessage();
         Form.scrollTo(0, Form.getBottom());
@@ -178,20 +154,17 @@ public class MainActivity extends AppCompatActivity {
     private void sendMessage() {
         String login =  mPrefs.getString("authLogin", "null");
         String sessionToken =  mPrefs.getString("sessionToken", "null");
-       // String [] attachments = new String[0];
-        socket.emitUserTyping(login,sessionToken);
-//        socket.emitMessage(login,sessionToken,UUID.randomUUID().toString(),message.getText().toString());
+        // Socket test. -> Not working
+  //      socket.emitUserTyping(login,sessionToken);
+  //      socket.emitMessage(login,sessionToken,UUID.randomUUID().toString(),message.getText().toString());
 
             Messages messages = new Messages();
             messages.setLogin(login);
             messages.setMessage(message.getText().toString());
             messages.setUuid(UUID.randomUUID().toString());
-            String [] attachments;
             //messages.setImage(attachments);
 
-
             Call<ResultMessages> call = apiManager2_0.sendMessages(authToken, messages);
-            //mSocket.emit("outbound_msg",login,authToken,messages);
             call.enqueue(new Callback<ResultMessages>() {
                 @Override
                 public void onResponse(Call<ResultMessages> call, Response<ResultMessages> response) {

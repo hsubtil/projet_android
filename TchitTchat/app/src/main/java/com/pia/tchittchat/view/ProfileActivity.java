@@ -33,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mailView;
     private TextView editProfile;
     private ImageView edit_profile_current_picture;
-    String login;
+    private String login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

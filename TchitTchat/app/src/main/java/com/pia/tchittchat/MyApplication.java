@@ -16,8 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyApplication extends Application {
     private ApiManager1_0 apiManager1_0;
     private ApiManager2_0 apiManager2_0;
-//    private OkHttpClient okHttpClient;
-
 
     @Override
     public void onCreate() {

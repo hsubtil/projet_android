@@ -1,18 +1,16 @@
-package com.pia.tchittchat.rest;
+package com.pia.tchittchat.tools;
 
 import android.content.SharedPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.socket.client.Manager;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 /**
  * Created by Hugo on 15/11/2017.
@@ -88,7 +86,5 @@ public class NetworkCom {
     public void destroySocket() {
         mSocket.disconnect();
     }
-
-
 
 }

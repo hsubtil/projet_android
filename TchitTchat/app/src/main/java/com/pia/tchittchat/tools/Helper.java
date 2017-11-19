@@ -1,4 +1,4 @@
-package com.pia.tchittchat.view;
+package com.pia.tchittchat.tools;
 
 import android.util.Base64;
 

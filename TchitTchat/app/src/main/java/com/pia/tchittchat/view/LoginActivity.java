@@ -12,22 +12,16 @@ import android.widget.Toast;
 
 import com.pia.tchittchat.MyApplication;
 import com.pia.tchittchat.R;
-import com.pia.tchittchat.rest.ApiManager1_0;
 import com.pia.tchittchat.rest.ApiManager2_0;
-import com.pia.tchittchat.model.Result;
-import com.pia.tchittchat.rest.NetworkCom;
+import com.pia.tchittchat.tools.NetworkCom;
+import com.pia.tchittchat.tools.Helper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
-import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private Button submitBtn;
@@ -57,9 +51,8 @@ public class LoginActivity extends AppCompatActivity {
 
         //Socket
         socket = new NetworkCom();
-        socket.getmSocket().on("auth_success",onAuthSuccess);
-        socket.getmSocket().on("auth_failed",onAuthFail);
-
+        socket.getmSocket().on("auth_success", onAuthSuccess);
+        socket.getmSocket().on("auth_failed", onAuthFail);
 
 
         checkConnectionToken();
@@ -67,14 +60,12 @@ public class LoginActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setProgressBarVisible();
                 SharedPreferences.Editor mEditor = mPrefs.edit();
                 mEditor.putLong("lastLogin", new Date().getTime());                 // Add a time to check timeout
-                mEditor.putString("authLogin",username.getText().toString());     // Add Login
+                mEditor.putString("authLogin", username.getText().toString());     // Add Login
                 mEditor.commit();
-                socket.emitConnect(username.getText().toString(),password.getText().toString());
+                socket.emitConnect(username.getText().toString(), password.getText().toString());
                 Toast.makeText(LoginActivity.this, "Authentication Failed. Please try again.", Toast.LENGTH_LONG).show();
-               // progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -96,18 +87,16 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Hello again !", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intentLogged);
-        }
-        else{
+        } else {
             Toast.makeText(LoginActivity.this, "Authentication timeout", Toast.LENGTH_LONG).show();
         }
 
     }
 
     private Emitter.Listener onAuthSuccess = new Emitter.Listener() {
+
         @Override
         public void call(Object... args) {
-            //TODO
-            // 	Payload: {"login":"foo","token":"session-token1234","message": "Authentication successful"}
             JSONObject obk = (JSONObject) args[0];
 
             String token = "";
@@ -120,10 +109,10 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor mEditor = mPrefs.edit();
             // Shared preference declaration
             mEditor.putString("sessionToken", token).apply();
-            String authToken = Helper.createAuthToken(username.getText().toString(),password.getText().toString());
+            String authToken = Helper.createAuthToken(username.getText().toString(), password.getText().toString());
             mEditor.putString("authToken", authToken).apply(); // Create / update TOKEN
 
-           // Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
+            // Toast.makeText(LoginActivity.this, "Hello", Toast.LENGTH_LONG).show();
             Intent intentLogged = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intentLogged);
 
